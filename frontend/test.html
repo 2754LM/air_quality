@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="en" style="height: 100%">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>ECharts Example</title>
+  <script type="text/javascript" src="https://registry.npmmirror.com/echarts/5.5.1/files/dist/echarts.min.js"></script>
+  <style>
+    body {
+      height: 100%;
+      margin: 0;
+      font-family: Arial, sans-serif;
+    }
+    .button-container {
+      text-align: center;
+      margin: 20px;
+    }
+    #container {
+      height: calc(100% - 100px);
+      width: 100%;
+    }
+  </style>
+</head>
+<body>
+  <div class="button-container">
+    <button onclick="fetchAndRenderChart('test')">显示污染等级</button>
+    <button onclick="fetchAndRenderChart('temperature')">显示温度数据</button>
+    <button onclick="fetchAndRenderChart('humidity')">显示湿度数据</button>
+  </div>
+  <div id="container"></div>
+
+  <script type="text/javascript">
+    var myChart = echarts.init(document.getElementById('container'));
+
+    function fetchAndRenderChart(type) {
+      let url;
+      switch (type) {
+        case 'test':
+          url = 'http://127.0.0.1:8000/test';
+          break;
+        case 'temperature':
+          url = 'http://127.0.0.1:8000/temperature';
+          break;
+        case 'humidity':
+          url = 'http://127.0.0.1:8000/humidity';
+          break;
+        default:
+          console.error('未知的图表类型:', type);
+          return;
+      }
+
+      fetch(url)
+        .then(response => {
+          if (!response.ok) {
+            throw new Error('网络响应不是 OK');
+          }
+          return response.json();
+        })
+        .then(data => {
+          renderChart(data);
+        })
+        .catch(error => {
+          console.error('获取数据失败:', error);
+        });
+    }
+
+    function renderChart(data) {
+      const option = {
+        title: {
+          text: data.title || '统计数据',  // 根据返回数据动态设置标题
+        },
+        tooltip: {},
+        xAxis: {
+          type: 'category',
+          data: data.categories,
+        },
+        yAxis: {
+          type: 'value',
+        },
+        series: [
+          {
+            name: data.seriesName || '数据',  // 根据返回数据动态设置系列名称
+            type: 'bar',
+            data: data.values,
+          },
+        ],
+      };
+
+      myChart.setOption(option);
+    }
+
+    window.addEventListener('resize', myChart.resize);
+  </script>
+</body>
+</html>
