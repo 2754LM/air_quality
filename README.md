@@ -6,4 +6,5 @@
 - backend/data/raw存放原始数据文件
 - backend/data/processed存放处理后的数据文件
 - frontend存放前端文件
+- frontend/static放静态文件
 
