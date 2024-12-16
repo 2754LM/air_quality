@@ -1,0 +1,114 @@
+<!-- <!DOCTYPE html>
+<html lang="en" style="height: 100%">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>ECharts Example</title>
+  <script src="https://registry.npmmirror.com/echarts/5.5.1/files/dist/echarts.min.js"></script>
+  <script>
+    var myChart = echarts.init(document.getElementById('main'));
+    fetch('http://127.0.0.1:8000/test')
+      .then(response => response.json())
+      .then(data => {
+        var option = {
+          title: {
+            text: data.title, 
+          },
+          tooltip: {},
+          xAxis: {
+            type: 'category',
+            data: data.categories,
+          },
+          yAxis: {
+            type: 'value',
+          },
+          series: [
+            {
+              name: data.seriesName,
+              type: 'bar',
+              data: data.values,
+            },
+          ],
+        };
+        myChart.setOption(option);
+      });
+  </script>
+</head>
+<body>
+  <div id="main" style="width: 600px;height:400px;"></div>
+</body>
+</html> -->
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>空气质量检测系统</title>
+    <link rel="stylesheet" href="/static/style.css">
+    <script>
+        function showPage(page) {
+            const pages = document.querySelectorAll('.page');
+            pages.forEach(p => {
+                p.style.display = 'none'; // 隐藏所有页面
+            });
+            document.getElementById(page).style.display = 'block'; // 显示选定页面
+        }
+
+        window.onload = function() {
+            showPage('pollutionStats'); // 默认显示所有省份污染等级页面
+        }
+    </script>
+</head>
+<body>
+    <header>
+        <h1>空气质量检测系统</h1>
+        <nav>
+            <button onclick="showPage('pollutionStats')">所有省份污染等级</button>
+            <button onclick="showPage('mainPollutants')">所有省份主要污染物</button>
+            <button onclick="showPage('cityTrend')">查询城市未来 5 天污染物等级</button>
+        </nav>
+    </header>
+
+    <main>
+        <!-- 所有省份污染等级 -->
+        <div id="pollutionStats" class="page">
+            <h2>所有省份污染等级</h2>
+            <div class="chart">
+                <h3>省份污染等级分布</h3>
+                <div id="pollutionChart" style="width: 100%; height: 400px;"></div>
+            </div>
+        </div>
+
+        <!-- 所有省份主要污染物 -->
+        <div id="mainPollutants" class="page" style="display: none;">
+            <h2>所有省份主要污染物</h2>
+            <div class="chart">
+                <h3>省份主要污染物分布</h3>
+                <div id="pollutantsChart" style="width: 100%; height: 400px;"></div>
+            </div>
+        </div>
+
+        <!-- 查询城市未来 5 天污染物等级变化 -->
+        <div id="cityTrend" class="page" style="display: none;">
+            <h2>查询城市未来 5 天污染物等级变化</h2>
+            <div class="chart">
+                <h3>选择城市查询污染物等级变化</h3>
+                <select id="citySelect">
+                    <option value="城市1">城市1</option>
+                    <option value="城市2">城市2</option>
+                    <option value="城市3">城市3</option>
+                    <option value="城市4">城市4</option>
+                    <option value="城市5">城市5</option>
+                    <!-- 添加更多城市选项 -->
+                </select>
+                <button class="query-btn" onclick="fetchProvinceTrend()">查询</button>
+            </div>
+            <div class="chart">
+                <h3>未来 5 天污染物等级变化图</h3>
+                <div id="trendChart" style="width: 100%; height: 400px;"></div>
+            </div>
+        </div>
+    </main>
+</body>
+</html>
