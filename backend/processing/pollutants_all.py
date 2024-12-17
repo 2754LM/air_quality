@@ -3,7 +3,7 @@ import os
 
 def pollutants_all():
     '''处理全国省份主要污染物'''
-    file_path = os.path.join(os.getcwd(), 'backend/data/raw/air_quality.csv')
+    file_path = os.path.join(os.path.dirname(__file__), '../data/raw/air_quality.csv')
     with open(file_path, 'r', encoding='utf-8') as f:
         data = f.readlines()
 
@@ -18,10 +18,10 @@ def pollutants_all():
         elif tmp[0] == '日期':
             flag = True
         elif flag:
-            flag = False
+            flag = False    
             pollutants = tmp[4]
             res[city] = pollutants
-    with open(os.path.join(os.getcwd(), 'backend/data/processed/pollutants_all.json'), 'w', encoding='utf-8') as f:
+    with open(os.path.join(os.path.dirname(__file__), '../data/processed/pollutants_all.json'), 'w', encoding='utf-8') as f:
         json.dump(res, f, ensure_ascii=False, indent=4)
 
 if __name__ == '__main__':

@@ -1,9 +1,12 @@
 import json
 import os
+from backend.crawler.province_fetcher import AirQualityFetcher
 
-
-def pollution_all():
+def pollution_all(Update = False):
     '''处理全国省份当前污染等级'''
+    if Update:
+        fetcher = AirQualityFetcher()
+        fetcher.save_all_air_quality()
     file_path = os.path.join(os.path.dirname(__file__), '../data/raw/air_quality.csv')
     with open(file_path, 'r', encoding='utf-8') as f:
         data = f.readlines()

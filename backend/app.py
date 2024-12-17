@@ -1,17 +1,23 @@
+from asyncio import sleep
+import sys
+import os
+sys.path.append(os.path.join(os.path.dirname(os.path.abspath(__file__)), '..'))
 from fastapi import FastAPI
 from fastapi.responses import FileResponse, HTMLResponse
-import os
 from fastapi.staticfiles import StaticFiles
+
+from backend.processing import pollution_all
+from backend.processing import pollutants_statics
+from backend.processing import aqi_ranges
+
+
+
 app = FastAPI()
 app.mount("/static", StaticFiles(directory=os.path.join(os.path.dirname(os.path.abspath(__file__)), '../frontend/static')), name="static")
 
-@app.get("/")
-def read_root():
-    return {"message": "Welcome to the FastAPI server!"}
-
 @app.get("/index")
 def get_chart():
-    file_path = os.path.join(os.path.dirname(__file__), '../frontend/index.html')
+    file_path = os.path.join(os.path.dirname(__file__), '..', 'frontend', 'index.html')
     with open(file_path, 'r', encoding='utf-8') as f:
         return HTMLResponse(content=f.read())
 
@@ -21,9 +27,11 @@ def get_file(filename: str):
 
 @app.get("/data/processed/{filename}")
 def get_processed_file(filename: str):
-    return FileResponse(os.path.join("data/processed", filename))
+    return FileResponse(os.path.join("data", "processed", filename))
 
-if __name__ == "__main__":
-    import uvicorn
-    uvicorn.run(app, host="127.0.0.1", port=8000)
-
+@app.post("/update_all")
+async def update_info():
+    await sleep(1) #测试用的，正式调用把下面参数传true
+    pollution_all.pollution_all()
+    aqi_ranges.aqi_ranges()
+    pollutants_statics.pollutants_count()

@@ -1,9 +1,9 @@
 import json
 import os
 
-def api_ranges():
+def aqi_ranges():
     '''统计全国省份当前污染等级数量'''
-    with open(os.path.join(os.path.dirname(__file__) ,'pollution_all.json'), 'r', encoding='utf-8') as f:
+    with open(os.path.join(os.path.dirname(__file__) ,'../data/processed/pollution_all.json'), 'r', encoding='utf-8') as f:
         data = json.load(f)
 
     ranges = [
@@ -32,6 +32,6 @@ def api_ranges():
         "seriesname": "城市数量"
     }
 
-    with open(os.path.join(os.path.dirname(__file__),'api_ranges.json'), 'w', encoding='utf-8') as f:
+    with open(os.path.join(os.path.dirname(__file__),'../data/processed/aqi_ranges.json'), 'w', encoding='utf-8') as f:
         json.dump(result, f, ensure_ascii=False, indent=4)
 
