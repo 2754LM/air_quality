@@ -76,22 +76,21 @@
                 },
                 visualMap: {
                     top: 'center',
-                    left: 'left',
+                    left: 'left',   
                     min: 0,
                     max: 300,
                     text: ['高', '低'],
-                    realtime: false,
+                    realtime: true,
                     calculable: true,
                     inRange: {
-                        color: ['#a8e6cf', '#dcedc1', '#ffab91', '#ff677d', '#d50032']
+                        color: ['lightgreen', 'lightyellow', 'salmon', 'red', 'darkred']
                     },
                     outOfRange: {
-                        color: ['#cccccc'] 
+                        color: ['grey'] 
                     }
                 },
                 series: [
                     {
-                        name: '空气污染指数',
                         type: 'map',
                         mapType: 'china',
                         roam: true,
@@ -104,9 +103,6 @@
                                     }
                                 }
                             },
-                            emphasis: {
-                                label: { show: true }
-                            }
                         },
                         data : m_data
                     }
@@ -118,6 +114,11 @@
         function update_pollution_level_chart(m_data){
             var my_echarts = echarts.init(document.getElementById("pollution_chart_level"));
             var option = {
+                tooltip: { //悬停显示
+                    trigger: 'item', 
+                    backgroundColor: "white",
+                    formatter: '空气污染等级：{b}<br/>城市数量：{c}'  //b: x轴分类, c: y轴值
+                },
                 xAxis: {
                     type: 'category',
                     data: m_data['categories']
@@ -137,7 +138,7 @@
         }
         
         window.onload = function() {
-            load_csv(); 
+            load_csv();
             show_page('pollution_all'); 
         };
     </script>
