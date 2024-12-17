@@ -1,12 +1,12 @@
 import json
 import os
-from crawler import AirQualityFetcher
+from backend.crawler.province_fetcher import AirQualityFetcher
 
 def pollution_all(update = False):
     if update:
         cur = AirQualityFetcher()
         cur.save_all_air_quality()
-    with open(os.path.join(os.path.dirname(__file__), 'data/raw/air_quality.csv'), 'r', encoding='utf-8') as f:
+    with open(os.path.join(os.path.dirname(__file__), '../data/raw/air_quality.csv'), 'r', encoding='utf-8') as f:
         data = f.readlines()
     res = {}
     city = ""
@@ -20,5 +20,5 @@ def pollution_all(update = False):
         elif flag:
             flag = False
             res[city] = tmp[1]
-    with open(os.path.join(os.path.dirname(__file__), 'data/processed/pollution_all.json'), 'w', encoding='utf-8') as f:
+    with open(os.path.join(os.path.dirname(__file__), '../data/processed/pollution_all.json'), 'w', encoding='utf-8') as f:
         json.dump(res, f, ensure_ascii=False, indent=4)

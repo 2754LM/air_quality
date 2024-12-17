@@ -5,5 +5,6 @@
 - backend/data存放数据文件
 - backend/data/raw存放原始数据文件
 - backend/data/processed存放处理后的数据文件
+- backend/processing存放数据处理文件
 - frontend存放前端文件
 
