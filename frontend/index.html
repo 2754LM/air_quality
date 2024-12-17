@@ -1,31 +1,3 @@
-
-<!-- var myChart = echarts.init(document.getElementById('main'));
-fetch('http://127.0.0.1:8000/test')
-  .then(response => response.json())
-  .then(data => {
-    var option = {
-      title: {
-        text: data.title, 
-      },
-      tooltip: {},
-      xAxis: {
-        type: 'category',
-        data: data.categories,
-      },
-      yAxis: {
-        type: 'value',
-      },
-      series: [
-        {
-          name: data.seriesName,
-          type: 'bar',
-          data: data.values,
-        },
-      ],
-    };
-    myChart.setOption(option);
-  }); -->
-
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -33,17 +5,109 @@ fetch('http://127.0.0.1:8000/test')
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>空气质量检测系统</title>
     <link rel="stylesheet" href="/static/style.css">
+    <script type="text/javascript" src="https://registry.npmmirror.com/echarts/5.5.1/files/dist/echarts.min.js"></script>
+    <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/echarts/map/js/china.js"></script>
     <script>
-        function showPage(page) {
+        function show_page(page_id) {
             var pages = document.querySelectorAll('.page');
             for (var i = 0; i < pages.length; i++) {
-                pages[i].style.display = 'none'; 
+                pages[i].style.display = 'none';
             }
-            document.getElementById(page).style.display = 'block'; 
+            document.getElementById(page_id).style.display = 'block'; 
+            
+            if (page_id === 'pollution_all') {
+                load_all_pollution_data();
+            }
+        }
+
+        function load_all_pollution_data() {
+            fetch('/data/processed/pollution_all.json')
+                .then(response =>response.json())
+                .then(data => {
+                    const formattedData = [];
+                    const cities = Object.keys(data);
+                    for (let i = 0; i < cities.length; i++) {
+                        const city = cities[i];
+                        formattedData.push({
+                            name: city,
+                            value: data[city]
+                        });
+                    }
+                    update_map(formattedData);
+                });
+        }
+
+        function load_csv() {
+            fetch('/data/province_id.csv').then(response => response.text()).then(data => {
+                var select = document.getElementById('city_select');
+                var rows = data.split('\n');
+                for (var i = 0; i < rows.length; i++) {
+                    var columns = rows[i].split(',');
+                    if (columns.length!== 2) continue;
+                    var option = document.createElement('option');
+                    option.value = columns[0];
+                    option.textContent = columns[0]; 
+                    select.appendChild(option);
+                }
+            });
+        }
+
+        function update_map(data) {
+            var my_echarts = echarts.init(document.getElementById("pollution_chart_all"));
+            var option = {
+                tooltip: {
+                    trigger: 'item',
+                    backgroundColor: "white",
+                    formatter: '地区：{b}<br/>空气污染指数：{c}'
+                },
+                visualMap: {
+                    top: 'center',
+                    left: 'left',
+                    min: 0,
+                    max: 300,
+                    text: ['高', '低'],
+                    realtime: false,
+                    calculable: true,
+                    inRange: {
+                        color: ['#a8e6cf', '#dcedc1', '#ffab91', '#ff677d', '#d50032']
+                    },
+                    outOfRange: {
+                        color: ['#cccccc'] 
+                    }
+                },
+                series: [
+                    {
+                        name: '空气污染指数',
+                        type: 'map',
+                        mapType: 'china',
+                        roam: true,
+                        itemStyle: {
+                            normal: {
+                                label: {
+                                    show: true,
+                                    textStyle: {
+                                        color: "black"
+                                    }
+                                }
+                            },
+                            emphasis: {
+                                label: { show: true }
+                            }
+                        },
+                        data : data
+                    }
+                ]
+            };
+            my_echarts.setOption(option);
+        }
+
+        function update_data(){
+
         }
 
         window.onload = function() {
-            showPage('pollution');
+            load_csv(); 
+            show_page('pollution_all'); 
         };
     </script>
 </head>
@@ -51,34 +115,39 @@ fetch('http://127.0.0.1:8000/test')
     <header>
         <h1>空气质量检测系统</h1>
         <nav>
-            <button onclick="showPage('pollution')">所有省份污染等级</button>
-            <button onclick="showPage('pollutants')">所有省份主要污染物</button>
-            <button onclick="showPage('trend')">查询城市未来 5 天污染物等级</button>
+            <button onclick="show_page('pollution_all')">全国总览</button>
+            <button onclick="show_page('pollution_level')">污染等级</button>
+            <button onclick="show_page('pollution_primary')">主要污染物</button>
+            <button onclick="show_page('pollution_trend')">未来污染等级</button>
         </nav>
+        <button class="update_button" onclick="update_data()">
+            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 1024 1024">
+                <path d="M960 416V192l-73.056 73.056a447.712 447.712 0 0 0-373.6-201.088C265.92 63.968 65.312 264.544 65.312 512S265.92 960.032 513.344 960.032a448.064 448.064 0 0 0 415.232-279.488 38.368 38.368 0 1 0-71.136-28.896 371.36 371.36 0 0 1-344.096 231.584C308.32 883.232 142.112 717.024 142.112 512S308.32 140.768 513.344 140.768c132.448 0 251.936 70.08 318.016 179.84L736 416h224z"/>
+            </svg>
+        </button>
     </header>
 
     <main>
-        <div id="pollution" class="page">
+        <div id="pollution_all" class="page">
+            <h2>全国污染指数</h2>
+            <div class="chart" id="pollution_chart_all"></div>
+        </div>
+
+        <div id="pollution_level" class="page" style="display: none;">
             <h2>所有省份污染等级</h2>
-            <div class="chart" id="pollutionChart" style="width: 100%; height: 400px;"></div>
+            <div class="chart" id="pollution_chart_level"></div>
         </div>
 
-        <div id="pollutants" class="page" style="display: none;">
-            <h2>所有省份主要空气污染物</h2>
-            <div class="chart" id="primaryPolltantsChart" style="width: 100%; height: 400px;"></div>
+        <div id="pollution_primary" class="page" style="display: none;">
+            <h2>所有省份主要污染物</h2>
+            <div class="chart" id="pollution_chart_primary"></div>
         </div>
 
-        <div id="trend" class="page" style="display: none;">
-            <h2>查询城市未来 5 天空气污染等级变化</h2>
-            <select id="citySelect">
-                <option value="城市1">城市1</option>
-                <option value="城市2">城市2</option>
-                <option value="城市3">城市3</option>
-                <option value="城市4">城市4</option>
-                <option value="城市5">城市5</option>
-            </select>
-            <button class="query-btn" onclick="fetchProvinceTrend()">查询</button>
-            <div class="chart" id="trendChart" style="width: 100%; height: 400px;"></div>
+        <div id="pollution_trend" class="page" style="display: none;">
+            <h2>查询省份未来污染等级变化</h2>
+            <select id="city_select"></select>
+            <button class="query_button" onclick="fetchProvinceTrend()">查询</button>
+            <div class="chart" id="pollution_chart_trend"></div>
         </div>
     </main>
 </body>
