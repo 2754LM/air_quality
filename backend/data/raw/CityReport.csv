@@ -1,0 +1,2 @@
+Id,CityCode,Area,CO,NO2,O3,PM10,PM2_5,SO2,AQI,PrimaryPollutant,Quality,Measure,Unheathful
+11686339,320100,南京市,0.6,37,83,75,46,9,64,细颗粒物(PM2.5),良,极少数异常敏感人群应减少户外活动,空气质量可接受，但某些污染物可能对极少数异常敏感人群健康有较弱影响
