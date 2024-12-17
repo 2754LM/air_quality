@@ -3,6 +3,7 @@ import os
 from backend.crawler.province_fetcher import AirQualityFetcher
 
 def pollution_all(update = False):
+    '''处理全国省份当前污染等级'''
     if update:
         cur = AirQualityFetcher()
         cur.save_all_air_quality()
@@ -23,3 +24,4 @@ def pollution_all(update = False):
             res[city] = tmp[1]
     with open(os.path.join(os.path.dirname(__file__), '../data/processed/pollution_all.json'), 'w', encoding='utf-8') as f:
         json.dump(res, f, ensure_ascii=False, indent=4)
+        

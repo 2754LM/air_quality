@@ -17,26 +17,11 @@
             
             if (page_id === 'pollution_all') {
                 load_pollution_all_data();
+            }else if (page_id === 'pollution_level') {
+                load_pollution_level_data();
             }
         }
-
-        function load_pollution_all_data() {
-            fetch('/data/processed/pollution_all.json')
-                .then(response =>response.json())
-                .then(data => {
-                    const formattedData = [];
-                    const cities = Object.keys(data);
-                    for (let i = 0; i < cities.length; i++) {
-                        const city = cities[i];
-                        formattedData.push({
-                            name: city,
-                            value: data[city]
-                        });
-                    }
-                    update_map(formattedData);
-                });
-        }
-
+        
         function load_csv() {
             fetch('/data/province_id.csv').then(response => response.text()).then(data => {
                 var select_history = document.getElementById('city_select_history');
@@ -53,8 +38,35 @@
                 }
             });
         }
+        
+        function load_all_data(){}
 
-        function update_map(data) {
+        function load_pollution_all_data() {
+            fetch('/data/processed/pollution_all.json')
+                .then(response =>response.json())
+                .then(data => {
+                    const formattedData = [];
+                    const cities = Object.keys(data);
+                    for (let i = 0; i < cities.length; i++) {
+                        const city = cities[i];
+                        formattedData.push({
+                            name: city,
+                            value: data[city]
+                        });
+                    }
+                    update_pollution_all_chart(formattedData);
+                });
+        }
+
+        function load_pollution_level_data(){
+            fetch('/data/processed/aqi_ranges.json')
+                .then(response =>response.json())
+                .then(data => {
+                    update_pollution_level_chart(data);
+                });
+        }
+        
+        function update_pollution_all_chart(m_data) {
             var my_echarts = echarts.init(document.getElementById("pollution_chart_all"));
             var option = {
                 tooltip: {
@@ -96,17 +108,34 @@
                                 label: { show: true }
                             }
                         },
-                        data : data
+                        data : m_data
                     }
                 ]
             };
             my_echarts.setOption(option);
         }
 
-        function update_all_data(){
-
+        function update_pollution_level_chart(m_data){
+            var my_echarts = echarts.init(document.getElementById("pollution_chart_level"));
+            var option = {
+                xAxis: {
+                    type: 'category',
+                    data: m_data['categories']
+                },
+                yAxis: {
+                    type: 'value',
+                    name: '省市数量',
+                },
+                series: [
+                    {
+                    data: m_data['value'],
+                    type: 'bar'
+                    }
+                ]
+            };
+            my_echarts.setOption(option);
         }
-
+        
         window.onload = function() {
             load_csv(); 
             show_page('pollution_all'); 
@@ -123,7 +152,7 @@
             <button onclick="show_page('pollution_trend')">未来污染趋势</button>
             <button onclick="show_page('pollution_history')">历史污染分析</button>
         </nav>
-        <button class="update_button" onclick="update_all_data()">
+        <button class="update_button" onclick="load_all_data()">
             <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 1024 1024">
                 <path d="M960 416V192l-73.056 73.056a447.712 447.712 0 0 0-373.6-201.088C265.92 63.968 65.312 264.544 65.312 512S265.92 960.032 513.344 960.032a448.064 448.064 0 0 0 415.232-279.488 38.368 38.368 0 1 0-71.136-28.896 371.36 371.36 0 0 1-344.096 231.584C308.32 883.232 142.112 717.024 142.112 512S308.32 140.768 513.344 140.768c132.448 0 251.936 70.08 318.016 179.84L736 416h224z"/>
             </svg>
@@ -137,7 +166,7 @@
         </div>
 
         <div id="pollution_level" class="page">
-            <h2>所有省份污染等级</h2>
+            <h2>所有省份污染等级数量</h2>
             <div class="chart" id="pollution_chart_level"></div>
         </div>
 
