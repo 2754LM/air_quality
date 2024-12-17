@@ -16,11 +16,11 @@
             document.getElementById(page_id).style.display = 'block'; 
             
             if (page_id === 'pollution_all') {
-                load_all_pollution_data();
+                load_pollution_all_data();
             }
         }
 
-        function load_all_pollution_data() {
+        function load_pollution_all_data() {
             fetch('/data/processed/pollution_all.json')
                 .then(response =>response.json())
                 .then(data => {
@@ -103,7 +103,7 @@
             my_echarts.setOption(option);
         }
 
-        function update_data(){
+        function update_all_data(){
 
         }
 
@@ -123,7 +123,7 @@
             <button onclick="show_page('pollution_trend')">未来污染趋势</button>
             <button onclick="show_page('pollution_history')">历史污染分析</button>
         </nav>
-        <button class="update_button" onclick="update_data()">
+        <button class="update_button" onclick="update_all_data()">
             <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 1024 1024">
                 <path d="M960 416V192l-73.056 73.056a447.712 447.712 0 0 0-373.6-201.088C265.92 63.968 65.312 264.544 65.312 512S265.92 960.032 513.344 960.032a448.064 448.064 0 0 0 415.232-279.488 38.368 38.368 0 1 0-71.136-28.896 371.36 371.36 0 0 1-344.096 231.584C308.32 883.232 142.112 717.024 142.112 512S308.32 140.768 513.344 140.768c132.448 0 251.936 70.08 318.016 179.84L736 416h224z"/>
             </svg>

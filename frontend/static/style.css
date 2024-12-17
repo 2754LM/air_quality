@@ -13,29 +13,21 @@ header {
     background: #4CAF50;
     color: white;
     padding: 15px 20px;
-    text-align: center;
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-}
-
-nav {
-    margin: 20px 0;
-    text-align: center;
 }
 
 nav button {
     background: #fff;
-    border: none;
     color: #4CAF50;
     padding: 10px 20px;
     margin: 0 5px;
     cursor: pointer;
     border-radius: 5px;
-    transition: background 0.3s, transform 0.2s; /* 添加变换效果 */
 }
 
 nav button:hover {
     background: #e0e0e0;
-    transform: scale(1.05); /* 悬停时放大 */
+    transform: scale(1.05);
 }
 
 main {
@@ -102,7 +94,6 @@ button.update_button {
     left: 20px;
     top: 20px;
     display: flex;
-    transition: background 0.3s, transform 0.2s; 
 }
 
 button.update_button:hover {
