@@ -39,7 +39,8 @@
 
         function load_csv() {
             fetch('/data/province_id.csv').then(response => response.text()).then(data => {
-                var select = document.getElementById('city_select');
+                var select_history = document.getElementById('city_select_history');
+                var select_trend = document.getElementById('city_select_trend');
                 var rows = data.split('\n');
                 for (var i = 0; i < rows.length; i++) {
                     var columns = rows[i].split(',');
@@ -47,7 +48,8 @@
                     var option = document.createElement('option');
                     option.value = columns[0];
                     option.textContent = columns[0]; 
-                    select.appendChild(option);
+                    select_history.appendChild(option.cloneNode(true));
+                    select_trend.appendChild(option.cloneNode(true));
                 }
             });
         }
@@ -118,7 +120,8 @@
             <button onclick="show_page('pollution_all')">全国总览</button>
             <button onclick="show_page('pollution_level')">污染等级</button>
             <button onclick="show_page('pollution_primary')">主要污染物</button>
-            <button onclick="show_page('pollution_trend')">未来污染等级</button>
+            <button onclick="show_page('pollution_trend')">未来污染趋势</button>
+            <button onclick="show_page('pollution_history')">历史污染分析</button>
         </nav>
         <button class="update_button" onclick="update_data()">
             <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 1024 1024">
@@ -133,21 +136,28 @@
             <div class="chart" id="pollution_chart_all"></div>
         </div>
 
-        <div id="pollution_level" class="page" style="display: none;">
+        <div id="pollution_level" class="page">
             <h2>所有省份污染等级</h2>
             <div class="chart" id="pollution_chart_level"></div>
         </div>
 
-        <div id="pollution_primary" class="page" style="display: none;">
+        <div id="pollution_primary" class="page">
             <h2>所有省份主要污染物</h2>
             <div class="chart" id="pollution_chart_primary"></div>
         </div>
 
-        <div id="pollution_trend" class="page" style="display: none;">
-            <h2>查询省份未来污染等级变化</h2>
-            <select id="city_select"></select>
-            <button class="query_button" onclick="fetchProvinceTrend()">查询</button>
+        <div id="pollution_trend" class="page">
+            <h2>查询省份未来污染变化</h2>
+            <select id="city_select_trend"></select>
+            <button class="query_button" onclick="">查询</button>
             <div class="chart" id="pollution_chart_trend"></div>
+        </div>
+
+        <div id="pollution_history" class="page">
+            <h2>查询省份历史污染分析</h2>
+            <select id="city_select_history"></select>
+            <button class="query_button" onclick="">查询</button>
+            <div class="chart" id="pollution_chart_history"></div>
         </div>
     </main>
 </body>
