@@ -110,4 +110,4 @@ class AirQualityFetcher:
 
 if __name__ == '__main__':
     a = AirQualityFetcher()
-    a.save_air_quality_history('广东')
+    a.save_air_quality('广东')
