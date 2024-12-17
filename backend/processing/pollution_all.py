@@ -6,7 +6,8 @@ def pollution_all(update = False):
     if update:
         cur = AirQualityFetcher()
         cur.save_all_air_quality()
-    with open(os.path.join(os.path.dirname(__file__), '../data/raw/air_quality.csv'), 'r', encoding='utf-8') as f:
+    file_path = os.path.join(os.path.dirname(__file__), '../data/raw/air_quality.csv')
+    with open(file_path, 'r', encoding='utf-8') as f:
         data = f.readlines()
     res = {}
     city = ""
