@@ -18,7 +18,9 @@ def pollution_all():
             flag = True
         elif flag:
             flag = False
-            res[city] = tmp[1]
+            res[city] = int(tmp[1])
     with open(os.path.join(os.path.dirname(__file__), '../data/processed/pollution_all.json'), 'w', encoding='utf-8') as f:
         json.dump(res, f, ensure_ascii=False, indent=4)
         
+if __name__ == '__main__':
+    pollution_all()
