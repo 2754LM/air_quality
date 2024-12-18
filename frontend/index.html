@@ -162,9 +162,9 @@
         }
 
         function update_pollution_primary_chart(m_data) {
-            var my_echarts = echarts.init(document.getElementById("pollution_chart_level"));
+            var my_echarts = echarts.init(document.getElementById("pollution_chart_primary"));
             var option = {
-                tooltip: { //悬停显示
+                tooltip: { 
                     trigger: 'item',
                     backgroundColor: "white",
                     formatter: '主要污染物：{b}<br/>城市数量：{c}'  //b: x轴分类, c: y轴值

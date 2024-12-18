@@ -3,7 +3,6 @@ import os
 from collections import Counter
 
 def pollutant_statistics():
-    
     with open(os.path.join(os.path.dirname(__file__) ,'../data/processed/pollutants_all.json'), 'r', encoding='utf-8') as f:
         data = json.load(f)
 

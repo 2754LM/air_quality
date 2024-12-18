@@ -34,4 +34,4 @@ async def update_info():
     await sleep(1) #测试用的，正式调用把下面参数传true
     pollution_all.pollution_all()
     aqi_ranges.aqi_ranges()
-    pollutants_statistics.pollutants_count()
+    pollutants_statistics.pollutant_statistics()
