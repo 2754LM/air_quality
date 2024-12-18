@@ -7,7 +7,7 @@ from fastapi.responses import FileResponse, HTMLResponse
 from fastapi.staticfiles import StaticFiles
 
 from backend.processing import pollution_all
-from backend.processing import pollutants_statics
+from backend.processing import pollutants_statistics
 from backend.processing import aqi_ranges
 
 
