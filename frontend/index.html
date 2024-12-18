@@ -164,7 +164,7 @@
         function update_pollution_primary_chart(m_data) {
             var my_echarts = echarts.init(document.getElementById("pollution_chart_primary"));
             var option = {
-                tooltip: { 
+                tooltip: {
                     trigger: 'item',
                     backgroundColor: "white",
                     formatter: '主要污染物：{b}<br/>城市数量：{c}'  //b: x轴分类, c: y轴值
@@ -250,11 +250,91 @@
             };
             my_echarts.setOption(option);
         }
-        
-        window.onload = function () {
-            load_csv();
-            show_page('pollution_all');
-        };
+
+        function load_pollution_history_data() {
+            var selectElement = document.getElementById("city_select_history");
+            var province_name = selectElement.value;
+            fetch(`/data/processed/${province_name}_maxaqi_time.json`)
+                .then(response => response.json())
+                .then(data => {
+                    update_pollution_history_chart(data);
+                });
+        }
+
+        function update_pollution_history_chart(m_data) {
+            var my_echarts = echarts.init(document.getElementById("pollution_chart_history"));
+
+            // 处理数据
+            var dates = Object.keys(m_data); // 获取所有日期
+            var aqiValues = dates.map(date => m_data[date].aqi); // 获取每日最大 AQI
+            var times = dates.map(date => m_data[date].maxaqi_time); // 获取对应时间点
+
+            // 配置项
+            var option = {
+                title: {
+                    text: '过去十天每日最大 AQI 时段分析'
+                },
+                tooltip: {
+                    trigger: 'axis',
+                    formatter: function (params) {
+                        var point = params[0];
+                        var time = times[point.dataIndex];
+                        return `日期: ${point.name}<br/>时间: ${time}<br/>AQI: ${point.value}`;
+                    }
+                },
+                legend: {},
+                toolbox: {
+                    show: true,
+                    feature: {
+                        dataZoom: {
+                            yAxisIndex: 'none'
+                        },
+                        dataView: { readOnly: false },
+                        magicType: { type: ['line', 'bar'] },
+                        restore: {},
+                        saveAsImage: {}
+                    }
+                },
+                xAxis: {
+                    type: 'category',
+                    boundaryGap: false,
+                    data: dates,
+                    name: '日期',
+                    axisLabel: {
+                        rotate: 45
+                    }
+                },
+                yAxis: {
+                    type: 'value',
+                    axisLabel: {
+                        formatter: '{value} AQI'
+                    },
+                    name: 'AQI'
+                },
+                series: [
+                    {
+                        name: '每日最大 AQI',
+                        type: 'line',
+                        data: aqiValues,
+                        markPoint: {
+                            data: [
+                                { type: 'max', name: '最大值' },
+                                { type: 'min', name: '最小值' }
+                            ]
+                        },
+                        markLine: {
+                            data: [{ type: 'average', name: '平均值' }]
+                        }
+                    }
+                ]
+            };
+
+            // 设置图表选项
+            my_echarts.setOption(option);
+        }
+
+        document.addEventListener('DOMContentLoaded', load_csv);
+
     </script>
 </head>
 
@@ -302,7 +382,7 @@
         <div id="pollution_history" class="page">
             <h2>查询省份历史污染分析</h2>
             <select id="city_select_history"></select>
-            <button class="query_button" onclick="">查询</button>
+            <button class="query_button" onclick="load_pollution_history_data()">查询</button>
             <div class="chart" id="pollution_chart_history"></div>
         </div>
     </main>
