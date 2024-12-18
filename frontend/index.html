@@ -47,7 +47,7 @@
             var load = document.getElementById('update_button_all');
             load.style.background = 'gray';
             load.disabled = true;
-            fetch('http://127.0.0.1:8000/update_all', {
+            fetch('/update_all', {
                 method: 'POST',
             }).finally(() => {
                 load.style.background = 'rgba(255, 255, 255, 0.8)';
