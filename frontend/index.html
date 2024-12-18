@@ -1,11 +1,13 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>空气质量检测系统</title>
     <link rel="stylesheet" href="/static/style.css">
-    <script type="text/javascript" src="https://registry.npmmirror.com/echarts/5.5.1/files/dist/echarts.min.js"></script>
+    <script type="text/javascript"
+        src="https://registry.npmmirror.com/echarts/5.5.1/files/dist/echarts.min.js"></script>
     <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/echarts/map/js/china.js"></script>
     <script>
         function show_page(page_id) {
@@ -13,17 +15,17 @@
             for (var i = 0; i < pages.length; i++) {
                 pages[i].style.display = 'none';
             }
-            document.getElementById(page_id).style.display = 'block'; 
-            
+            document.getElementById(page_id).style.display = 'block';
+
             if (page_id === 'pollution_all') {
                 load_pollution_all_data();
-            }else if (page_id === 'pollution_level') {
+            } else if (page_id === 'pollution_level') {
                 load_pollution_level_data();
-            }else if (page_id === 'pollution_primary') {
+            } else if (page_id === 'pollution_primary') {
                 load_pollution_primary_data();
             }
         }
-        
+
         function load_csv() {
             fetch('/data/province_id.csv').then(response => response.text()).then(data => {
                 var select_history = document.getElementById('city_select_history');
@@ -31,16 +33,16 @@
                 var rows = data.split('\n');
                 for (var i = 0; i < rows.length; i++) {
                     var columns = rows[i].split(',');
-                    if (columns.length!== 2) continue;
+                    if (columns.length !== 2) continue;
                     var option = document.createElement('option');
                     option.value = columns[0];
-                    option.textContent = columns[0]; 
+                    option.textContent = columns[0];
                     select_history.appendChild(option.cloneNode(true));
                     select_trend.appendChild(option.cloneNode(true));
                 }
             });
         }
-        
+
         function load_all_data() {
             var load = document.getElementById('update_button_all');
             load.style.background = 'gray';
@@ -48,7 +50,7 @@
             fetch('http://127.0.0.1:8000/update_all', {
                 method: 'POST',
             }).finally(() => {
-                load.style.background = 'rgba(255, 255, 255, 0.8)'; 
+                load.style.background = 'rgba(255, 255, 255, 0.8)';
                 load.disabled = false;
                 alert('数据更新成功！');
             });
@@ -57,7 +59,7 @@
 
         function load_pollution_all_data() {
             fetch('/data/processed/pollution_all.json')
-                .then(response =>response.json())
+                .then(response => response.json())
                 .then(data => {
                     const formattedData = [];
                     const cities = Object.keys(data);
@@ -72,17 +74,17 @@
                 });
         }
 
-        function load_pollution_level_data(){
+        function load_pollution_level_data() {
             fetch('/data/processed/aqi_ranges.json')
-                .then(response =>response.json())
+                .then(response => response.json())
                 .then(data => {
                     update_pollution_level_chart(data);
                 });
         }
-        
-        function load_pollution_primary_data(){
+
+        function load_pollution_primary_data() {
             fetch('/data/processed/pollutant_statistics.json')
-                .then(response =>response.json())
+                .then(response => response.json())
                 .then(data => {
                     update_pollution_primary_chart(data);
                 });
@@ -98,7 +100,7 @@
                 },
                 visualMap: {
                     top: 'center',
-                    left: 'left',   
+                    left: 'left',
                     min: 0,
                     max: 300,
                     text: ['高', '低'],
@@ -108,7 +110,7 @@
                         color: ['lightgreen', 'lightyellow', 'salmon', 'red', 'darkred']
                     },
                     outOfRange: {
-                        color: ['grey'] 
+                        color: ['grey']
                     }
                 },
                 series: [
@@ -126,18 +128,18 @@
                                 }
                             },
                         },
-                        data : m_data
+                        data: m_data
                     }
                 ]
             };
             my_echarts.setOption(option);
         }
 
-        function update_pollution_level_chart(m_data){
+        function update_pollution_level_chart(m_data) {
             var my_echarts = echarts.init(document.getElementById("pollution_chart_level"));
             var option = {
                 tooltip: { //悬停显示
-                    trigger: 'item', 
+                    trigger: 'item',
                     backgroundColor: "white",
                     formatter: '空气污染等级：{b}<br/>城市数量：{c}'  //b: x轴分类, c: y轴值
                 },
@@ -151,19 +153,19 @@
                 },
                 series: [
                     {
-                    data: m_data['value'],
-                    type: 'bar'
+                        data: m_data['value'],
+                        type: 'bar'
                     }
                 ]
             };
             my_echarts.setOption(option);
         }
-        
-        function update_pollution_primary_chart(m_data){
+
+        function update_pollution_primary_chart(m_data) {
             var my_echarts = echarts.init(document.getElementById("pollution_chart_level"));
             var option = {
                 tooltip: { //悬停显示
-                    trigger: 'item', 
+                    trigger: 'item',
                     backgroundColor: "white",
                     formatter: '主要污染物：{b}<br/>城市数量：{c}'  //b: x轴分类, c: y轴值
                 },
@@ -177,20 +179,85 @@
                 },
                 series: [
                     {
-                    data: m_data['value'],
-                    type: 'bar'
+                        data: m_data['value'],
+                        type: 'bar'
                     }
                 ]
             };
             my_echarts.setOption(option);
         }
 
-        window.onload = function() {
+        function load_pollution_trend_data() {
+            var selectElement = document.getElementById("city_select_trend");
+            var province_name = selectElement.value;
+            fetch(`/data/processed/${province_name}.json`)
+                .then(response => response.json())
+                .then(data => {
+                    update_pollution_trend_chart(data)
+                });
+        }
+
+        function update_pollution_trend_chart(m_data) {
+            var my_echarts = echarts.init(document.getElementById("pollution_chart_trend"));
+            option = {
+                title: {
+                    text: '未来五天省内污染等级变化'
+                },
+                tooltip: {
+                    trigger: 'axis'
+                },
+                legend: {},
+                toolbox: {
+                    show: true,
+                    feature: {
+                        dataZoom: {
+                            yAxisIndex: 'none'
+                        },
+                        dataView: { readOnly: false },
+                        magicType: { type: ['line', 'bar'] },
+                        restore: {},
+                        saveAsImage: {}
+                    }
+                },
+                xAxis: {
+                    type: 'category',
+                    boundaryGap: false,
+                    data: m_data['dates']
+                },
+                yAxis: {
+                    type: 'value',
+                    axisLabel: {
+                        formatter: '{value} AQI'
+                    }
+                },
+                series: [
+                    {
+                        name: 'AQI',
+                        type: 'line',
+                        data: m_data['aqi'],
+                        markPoint: {
+                            data: [
+                                { type: 'max', name: 'Max' },
+                                { type: 'min', name: 'Min' }
+                            ]
+                        },
+                        markLine: {
+                            data: [{ type: 'average', name: 'Avg' }]
+                        }
+                    },
+
+                ]
+            };
+            my_echarts.setOption(option);
+        }
+        
+        window.onload = function () {
             load_csv();
-            show_page('pollution_all'); 
+            show_page('pollution_all');
         };
     </script>
 </head>
+
 <body>
     <header>
         <h1>空气质量检测系统</h1>
@@ -201,9 +268,10 @@
             <button onclick="show_page('pollution_trend')">未来污染趋势</button>
             <button onclick="show_page('pollution_history')">历史污染分析</button>
         </nav>
-        <button class="update_button" id = "update_button_all" onclick="load_all_data()">
+        <button class="update_button" id="update_button_all" onclick="load_all_data()">
             <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 1024 1024">
-                <path d="M960 416V192l-73.056 73.056a447.712 447.712 0 0 0-373.6-201.088C265.92 63.968 65.312 264.544 65.312 512S265.92 960.032 513.344 960.032a448.064 448.064 0 0 0 415.232-279.488 38.368 38.368 0 1 0-71.136-28.896 371.36 371.36 0 0 1-344.096 231.584C308.32 883.232 142.112 717.024 142.112 512S308.32 140.768 513.344 140.768c132.448 0 251.936 70.08 318.016 179.84L736 416h224z"/>
+                <path
+                    d="M960 416V192l-73.056 73.056a447.712 447.712 0 0 0-373.6-201.088C265.92 63.968 65.312 264.544 65.312 512S265.92 960.032 513.344 960.032a448.064 448.064 0 0 0 415.232-279.488 38.368 38.368 0 1 0-71.136-28.896 371.36 371.36 0 0 1-344.096 231.584C308.32 883.232 142.112 717.024 142.112 512S308.32 140.768 513.344 140.768c132.448 0 251.936 70.08 318.016 179.84L736 416h224z" />
             </svg>
         </button>
     </header>
@@ -227,7 +295,7 @@
         <div id="pollution_trend" class="page">
             <h2>查询省份未来污染变化</h2>
             <select id="city_select_trend"></select>
-            <button class="query_button" onclick="">查询</button>
+            <button class="query_button" onclick="load_pollution_trend_data()">查询</button>
             <div class="chart" id="pollution_chart_trend"></div>
         </div>
 
@@ -239,4 +307,5 @@
         </div>
     </main>
 </body>
+
 </html>
