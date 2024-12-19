@@ -52,12 +52,12 @@
             load.disabled = true;
             var province_name = '';
             var history = 'false';
-            if (name == 'update_button_all'){
+            if (id_name == 'update_button_all'){
                 province_name = 'all';
-            }else if(name == 'update_button1'){
+            }else if(id_name == 'update_button1'){
                 province_name = document.getElementById('city_select_trend').value;
                 history = 'false';
-            }else if(name == 'update_button2'){
+            }else if(id_name == 'update_button2'){
                 province_name = document.getElementById('city_select_history').value;
                 history = 'true';
             }
@@ -77,7 +77,7 @@
                 }else{
                     alert('数据更新失败！');
                 }
-                if(name == 'update_button_all') load.style.background = 'rgba(255, 255, 255, 0.8)';
+                if(id_name == 'update_button_all') load.style.background = 'rgba(255, 255, 255, 0.8)';
                 else load.style.background = 'rgba(69, 160, 73, 1)';
                 load.disabled = false;
             });
