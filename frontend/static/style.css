@@ -101,47 +101,47 @@ button.update_button:hover {
 .cover-frame {
     position: relative;
     min-width: 100%;
-    height: 100vh;
+    height: 100vh
 }
 
 .cover-frame .bg-box {
     width: 100%;
-    height: 100%;
+    height: 100%
 }
 
-.cover-frame .bg-box > img {
+.cover-frame .bg-box>img {
     display: block;
     width: 100vw;
     height: 100vh;
+    -o-object-fit: cover;
     object-fit: cover;
-    object-position: center;
+    -o-object-position: center center;
+    object-position: center center
 }
 
 .cover-inner {
     position: absolute;
     top: 50%;
     left: 50%;
-    transform: translate(-50%, -100%);
-    text-align: center;
-    color: #fff;
+    transform: translate(-50%,-100%)
 }
 
 .cover-inner h1 {
-    font-size: 5rem;
+    font-size: 7rem;
     margin: 0;
-    opacity: 0.95;
+    opacity: .95
+}
+
+.cover-inner #subtitle-box,.cover-inner h1 {
+    font-family: Titillium Web,PingFang SC,Hiragino Sans GB,Microsoft JhengHei,Microsoft YaHei,Helvetica Neue,Helvetica,Arial,sans-serif
 }
 
 .cover-inner #subtitle-box {
-    font-size: 2rem;
-    margin: 0.5rem 0 1.5rem;
+    font-size: 3rem;
+    margin: .5rem 0 1.5rem
 }
 
-.cover-inner, .cover-inner a {
-    text-decoration: none;
-    color: white;
-}
-
-.cover-inner h1, .cover-inner #subtitle-box {
-    font-family: Titillium Web, PingFang SC, Hiragino Sans GB, Microsoft JhengHei, Microsoft YaHei, Helvetica Neue, Helvetica, Arial, sans-serif;
+.cover-inner,.cover-inner a {
+    color: #fff;
+    text-decoration: none
 }
