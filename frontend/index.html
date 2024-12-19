@@ -46,6 +46,42 @@
             });
         }
         
+        //加载日期和时间
+        function load_date_time_csv() {
+            const now=new Date();
+
+            const dateList=[];
+            for(let i=-10;i<=0;i++){
+                const date=new Date();
+                date.setDate(now.getDate()+i);
+                const month=String(date.getMonth()+1).padStart(2,'0');
+                const day=String(date.getDate()).padStart(2,'0');
+                dateList.push(`${month}-${day}`);
+            }
+            const select_date = document.getElementById('date_select');
+            dateList.forEach(date => {
+                const option = document.createElement('option');
+                option.value = date;
+                option.textContent = date;
+                select_date.appendChild(option);
+            });
+
+            const timeList = [
+                '00:00', '01:00', '02:00', '03:00', '04:00', '05:00',
+                '06:00', '07:00', '08:00', '09:00', '10:00', '11:00',
+                '12:00', '13:00', '14:00', '15:00', '16:00', '17:00',
+                '18:00', '19:00', '20:00', '21:00', '22:00', '23:00'
+            ];
+
+            const select_time = document.getElementById('time_select');
+            timeList.forEach(time => {
+                const option = document.createElement('option');
+                option.value = time;
+                option.textContent = time;
+                select_time.appendChild(option);
+            });
+        }    
+
         //刷新数据
         function load_data(id_name) {
             var load = document.getElementById(id_name);
@@ -87,6 +123,7 @@
                     }).then(respons =>  {
                         if(respons.status == 200){
                             alert('数据更新成功！');
+
                         }else{
                             alert('数据更新失败！');
                         }
@@ -471,8 +508,76 @@
             my_echarts.setOption(option);
         }
 
+    //省份历史趋势
+    function load_pollution_type_data() {
+        var selectElement = document.getElementById("city_select_history");
+        var province_name = selectElement.value;
+        var currentYear = new Date().getFullYear();
+        var selectedDate = `${currentYear}-${document.getElementById("date_select").value}`;
+        var selectedTime = document.getElementById("time_select").value;
+        fetch(`/data/processed/${province_name}_aqitype.json`)
+            .then(response => response.json())
+            .then(data => {
+                update_pollution_type_chart(data, selectedDate, selectedTime);
+            })
+    }
+
+    function update_pollution_type_chart(m_data, selectedDate, selectedTime) {
+            var my_echarts = echarts.init(document.getElementById("pollution_chart_type"));
+
+            // 提取污染物浓度数据
+            var pollutionData = m_data[selectedDate][selectedTime];
+            var radarData = [
+                pollutionData["PM10"] || 0,
+                pollutionData["PM2.5"] || 0,
+                pollutionData["NO2"] || 0,
+                pollutionData["SO2"] || 0,
+                pollutionData["CO"] || 0,
+                pollutionData["O3"] || 0
+            ];
+
+            // 定义雷达图的配置项
+            var option = {
+                title: {
+                    text: `污染物浓度雷达图\n日期: ${selectedDate}, 时间: ${selectedTime}`
+                },
+                tooltip: {
+                    trigger: 'item',
+                    formatter: function (params) {
+                        return params.name + ': ' + params.value;
+                    }
+                },
+                radar: {
+                    indicator: [
+                        { name: 'PM10', max: 200 },
+                        { name: 'PM2.5', max: 200 },
+                        { name: 'NO2', max: 200 },
+                        { name: 'SO2', max: 50 },
+                        { name: 'CO', max: 10 },
+                        { name: 'O3', max: 200 }
+                    ]
+                },
+                series: [
+                    {
+                        name: '污染物浓度',
+                        type: 'radar',
+                        data: [
+                            {
+                                value: radarData,
+                                name: '浓度'
+                            }
+                        ]
+                    }
+                ]
+            };
+
+            // 设置图表配置
+            my_echarts.setOption(option);
+        }
+
         onload = function () {
             load_csv();
+            load_date_time_csv();
             show_page('pollution_all');
         }
     </script>
@@ -537,10 +642,14 @@
             <h2>查询省份历史污染分析</h2>
             <select id="city_select_history"></select>
             <button class="query_button"
-                onclick="load_pollution_history_data();load_pollution_hourly_data()">查询</button>
+                onclick="load_pollution_history_data();load_pollution_hourly_data();load_pollution_type_data()">查询</button>
                 <button class="query_button" id = "update_button2" onclick="load_data('update_button2')">更新</button>
             <div class="chart" id="pollution_chart_history"></div>
             <div class="chart" id="pollution_chart_hourly"></div>
+            <div class="chart" id="pollution_chart_type">
+                <select id="date_select"></select>
+                <select id="time_select"></select>
+            </div>
         </div>
     </main>
 </body>
