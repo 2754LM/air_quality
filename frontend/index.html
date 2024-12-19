@@ -490,23 +490,9 @@
             <button class="query_button"
                 onclick="load_pollution_history_data();load_pollution_hourly_data()">查询</button>
                 <button class="query_button" id = "update_button2" onclick="load_data('update_button2')">更新</button>
-            <div class="chart-container">
-                <div class="chart3" id="pollution_chart_history"></div>
-                <div class="chart3" id="pollution_chart_hourly"></div>
-            </div>
+            <div class="chart" id="pollution_chart_history"></div>
+            <div class="chart" id="pollution_chart_hourly"></div>
         </div>
-        <style>
-            .chart-container {
-                display: flex;
-                justify-content: space-between;
-                gap: 20px;
-            }
-
-            .chart3 {
-                width: 48%;
-                height: 400px;
-            }
-        </style>
     </main>
 </body>
 
