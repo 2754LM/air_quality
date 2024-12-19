@@ -1,7 +1,7 @@
 import sys
 import os
 
-from pydantic import BaseModel
+from pydantic import BaseModel # pylint: disable=no-name-in-module
 
 sys.path.append(os.path.join(os.path.dirname(os.path.abspath(__file__)), '..'))
 from fastapi import FastAPI
@@ -32,6 +32,6 @@ class UpdateInfo(BaseModel):
     history: str
 
 @app.post("/update")
-async def update_info(update_info: UpdateInfo):
-    control.update_data(update_info.province_name, UpdateInfo.history)
-    return {"province_name": update_info.province_name}
+async def update_info(info: UpdateInfo):
+    control.update_data(info.province_name, info.history)
+    return {"province_name": info.province_name}
