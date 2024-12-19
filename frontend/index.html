@@ -221,6 +221,8 @@
                 .then(response => response.json())
                 .then(data => {
                     update_pollution_trend_chart(data)
+                }).catch(error => {
+                    alert('请先更新数据');
                 });
         }
         function update_pollution_trend_chart(m_data) {
@@ -285,6 +287,8 @@
                 .then(response => response.json())
                 .then(data => {
                     update_pollution_history_chart(data);
+                }).catch(error => {
+                    alert('请先更新数据');
                 });
         }
         function update_pollution_history_chart(m_data) {
