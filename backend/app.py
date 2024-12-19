@@ -15,7 +15,7 @@ from backend.processing import aqi_ranges
 app = FastAPI()
 app.mount("/static", StaticFiles(directory=os.path.join(os.path.dirname(os.path.abspath(__file__)), '../frontend/static')), name="static")
 
-@app.get("/index")
+@app.get("/")
 def get_chart():
     file_path = os.path.join(os.path.dirname(__file__), '..', 'frontend', 'index.html')
     with open(file_path, 'r', encoding='utf-8') as f:
