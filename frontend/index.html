@@ -253,7 +253,17 @@
                     text: '未来五天省内污染等级变化'
                 },
                 tooltip: {
-                    trigger: 'axis'
+                    trigger: 'axis',
+                    formatter: function (params) {
+                        let tooltipContent = `<strong>${params[0].name}</strong><br/>`;
+                        params.forEach((param) => {
+                            tooltipContent += `${param.seriesName}: ${param.value}<br/>`;     
+                                const dateIndex = m_data.dates.indexOf(param.name);
+                                tooltipContent += `污染等级 : ${m_data.level[dateIndex]} (${m_data.level_detail[dateIndex]})<br/>`;
+                                tooltipContent += `主要污染物: ${m_data.main_pollutant[dateIndex]}<br/>`;
+                        });
+                        return tooltipContent;
+                    }
                 },
                 legend: {},
                 toolbox: {
