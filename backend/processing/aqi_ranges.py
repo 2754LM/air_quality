@@ -3,7 +3,7 @@ import os
 
 def aqi_ranges():
     '''全国aqi分档统计'''
-    with open(os.path.join(os.path.dirname(__file__) ,'../data/processed/pollution_all.json'), 'r', encoding='utf-8') as f:
+    with open(os.path.join(os.path.dirname(__file__) , '..', 'data', 'processed', 'pollution_all.json'), 'r', encoding='utf-8') as f:
         data = json.load(f)
 
     ranges = [
@@ -32,6 +32,6 @@ def aqi_ranges():
         "seriesname": "城市数量"
     }
 
-    with open(os.path.join(os.path.dirname(__file__),'../data/processed/aqi_ranges.json'), 'w', encoding='utf-8') as f:
+    with open(os.path.join(os.path.dirname(__file__),'..', 'data', 'processed', 'aqi_ranges.json'), 'w', encoding='utf-8') as f:
         json.dump(result, f, ensure_ascii=False, indent=4)
 

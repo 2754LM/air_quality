@@ -45,17 +45,37 @@
             });
         }
         
-        //刷新按钮
-        function load_all_data() {
-            var load = document.getElementById('update_button_all');
+        //刷新数据
+        function load_data(id_name) {
+            var load = document.getElementById(id_name);
             load.style.background = 'gray';
             load.disabled = true;
-            fetch('/update_all', {
+            var province_name = '';
+            if (name == 'update_button_all'){
+                province_name = 'all';
+            }else if(name == 'update_button1'){
+                province_name = document.getElementById('city_select_trend').value;
+            }else if(name == 'update_button2'){
+                province_name = document.getElementById('city_select_history').value;
+            }
+            const data = {
+                'province_name' : province_name
+            }
+            fetch('/update', {
                 method: 'POST',
-            }).finally(() => {
-                load.style.background = 'rgba(255, 255, 255, 0.8)';
+                headers:{
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify(data)
+            }).then(respons =>  {
+                if(respons.status == 200){
+                    alert('数据更新成功！');
+                }else{
+                    alert('数据更新失败！');
+                }
+                if(name == 'update_button_all') load.style.background = 'rgba(255, 255, 255, 0.8)';
+                else load.style.background = 'rgba(69, 160, 73, 1)';
                 load.disabled = false;
-                alert('数据更新成功！');
             });
         }
         
@@ -352,7 +372,7 @@
             <button onclick="show_page('pollution_trend')">未来污染趋势</button>
             <button onclick="show_page('pollution_history')">历史污染分析</button>
         </nav>
-        <button class="update_button" id="update_button_all" onclick="load_all_data()">
+        <button class="update_button" id="update_button_all" onclick="load_data('update_button_all')">
             <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 1024 1024">
                 <path
                     d="M960 416V192l-73.056 73.056a447.712 447.712 0 0 0-373.6-201.088C265.92 63.968 65.312 264.544 65.312 512S265.92 960.032 513.344 960.032a448.064 448.064 0 0 0 415.232-279.488 38.368 38.368 0 1 0-71.136-28.896 371.36 371.36 0 0 1-344.096 231.584C308.32 883.232 142.112 717.024 142.112 512S308.32 140.768 513.344 140.768c132.448 0 251.936 70.08 318.016 179.84L736 416h224z" />
@@ -380,6 +400,7 @@
             <h2>查询省份未来污染变化</h2>
             <select id="city_select_trend"></select>
             <button class="query_button" onclick="load_pollution_trend_data()">查询</button>
+            <button class="query_button" id = "update_button1" onclick="load_data('update_button1')">更新</button>
             <div class="chart" id="pollution_chart_trend"></div>
         </div>
 
@@ -387,6 +408,7 @@
             <h2>查询省份历史污染分析</h2>
             <select id="city_select_history"></select>
             <button class="query_button" onclick="load_pollution_history_data()">查询</button>
+            <button class="query_button" id = "update_button2" onclick="load_data('update_button2')">更新</button>
             <div class="chart" id="pollution_chart_history"></div>
         </div>
     </main>

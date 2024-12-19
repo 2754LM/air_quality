@@ -78,15 +78,16 @@ button {
 }
 
 button.query_button {
-    background: #4CAF50;
+    background: rgba(76, 175, 80, 1);
     color: white;
     border: none;
 }
 
 button.query_button:hover {
-    background: #45a049;
+    background: rgba(69, 160, 73, 1);
     transform: scale(1.05);
 }
+
 
 button.update_button {
     background: rgba(255, 255, 255, 0.8); 

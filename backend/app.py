@@ -1,6 +1,8 @@
-from asyncio import sleep
 import sys
 import os
+
+from pydantic import BaseModel
+
 sys.path.append(os.path.join(os.path.dirname(os.path.abspath(__file__)), '..'))
 from fastapi import FastAPI
 from fastapi.responses import FileResponse, HTMLResponse
@@ -24,6 +26,11 @@ def get_file(filename):
 def get_processed_file(filename):
     return FileResponse(os.path.join("data", "processed", filename))
 
-@app.post("/update_all")
-async def update_info():
-    control.update_data()
+
+class UpdateInfo(BaseModel):
+    province_name: str
+
+@app.post("/update")
+async def update_info(update_info: UpdateInfo):
+    control.update_data(update_info.province_name)
+    return {"province_name": update_info.province_name}

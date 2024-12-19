@@ -31,7 +31,6 @@ class AirQualityFetcher:
         for i in range(1, 11):
             day_before = today - datetime.timedelta(days=i)
             format_day = day_before.strftime('%Y%m%d')
-            print(format_day)
             url = f"https://api.qweather.com/v7/historical/air?location={location}&date={format_day}&key={self.key}"
             try:
                 response = requests.get(url, timeout=10)
@@ -58,7 +57,7 @@ class AirQualityFetcher:
         data = self._get_air_quality_future(province)
         if data == []:
             return
-        file_path = os.path.join(self.base_dir, '../data/raw', f'{province}.csv')
+        file_path = os.path.join(self.base_dir, '..', 'data', 'raw', f'{province}.csv')
         with open(file_path, 'w', encoding='utf-8', newline='') as f:
             csv_write = csv.writer(f)
             csv_write.writerow(['日期', '空气质量指数', '空气质量指数等级', '空气质量指数级别', '主要污染物'])
@@ -67,7 +66,7 @@ class AirQualityFetcher:
 
     def save_all_air_quality(self):
         """保存所有省份未来5天的空气质量数据到air_quality.csv文件"""
-        file_path = os.path.join(self.base_dir, '../data/raw', 'air_quality.csv')
+        file_path = os.path.join(self.base_dir, '..', 'data', 'raw', 'air_quality.csv')
         with open(file_path, 'w', encoding='utf-8', newline='') as f:
             csv_write = csv.writer(f)
             for province in self.province_id:
@@ -84,7 +83,7 @@ class AirQualityFetcher:
         data = self._get_air_quality_history(province)
         if data == []:
             return
-        file_path = os.path.join(self.base_dir, 'data/raw', f'{province}_history.csv')
+        file_path = os.path.join(self.base_dir, '..', 'data', 'raw', f'{province}_history.csv')
         with open(file_path, 'w', encoding='utf-8', newline='') as f:
             csv_write = csv.writer(f)
             csv_write.writerow(['日期', '空气质量指数', '空气质量指数等级', '空气质量指数级别', '主要污染物',
@@ -95,7 +94,7 @@ class AirQualityFetcher:
     # 尽量不使用！一次一块钱。
     # def save_all_air_quality_history(self):
     #     """保存所有省份的前10天空气质量数据到air_quality_history.csv文件"""
-    #     file_path = os.path.join(self.base_dir, 'data/raw', 'air_quality_history.csv')
+    #     file_path = os.path.join(self.base_dir, '..', 'data', 'raw', 'air_quality_history.csv')
     #     with open(file_path, 'w', encoding='utf-8', newline='') as f:
     #         csv_write = csv.writer(f)
     #         for province in self.province_id:
@@ -114,6 +113,7 @@ class AirQualityFetcher:
 if __name__ == '__main__':
     # 示例
     a = AirQualityFetcher()
+    a.save_air_quality_history('北京')
     # a.save_air_quality('上海')
     # a.save_all_air_quality()
     

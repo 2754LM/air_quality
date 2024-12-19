@@ -4,9 +4,7 @@ import os
 
 def pollution_trend(province_name):
     ''''某省份未来5天aqi'''
-    path = os.getcwd()
-    file_path = os.path.join(path, "backend", "data", "raw", f"{province_name}.csv")
-    
+    file_path = os.path.join(os.path.dirname(__file__), '..', 'data', 'raw', f'{province_name}.csv')
     dates = []
     aqis = []
     levels = []
@@ -29,8 +27,7 @@ def pollution_trend(province_name):
         "level_detail": level_details,
         "main_pollutant": main_pollutants
     }
-
-    savepath = os.path.join(path, "backend", "data", "processed", f"{province_name}.json")
+    savepath = os.path.join(os.path.dirname(__file__), '..', 'data', 'processed', f'{province_name}.json')
     with open(savepath, mode="w", encoding="utf-8") as json_file:
         json.dump(data, json_file, ensure_ascii=False, indent=4)
 

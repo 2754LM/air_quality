@@ -5,7 +5,7 @@ import os
 def process_aqi_data_simple(province_name):
     daily_max_aqi = {}
     
-    file_path = os.path.join(os.path.dirname(__file__), f'../data/raw/{province_name}_history.csv')
+    file_path = os.path.join(os.path.dirname(__file__), '..', 'data', 'raw', f'{province_name}_history.csv')
     with open(file_path, 'r', encoding='utf-8') as file:
         reader = csv.DictReader(file)
         for row in reader:
@@ -22,7 +22,7 @@ def process_aqi_data_simple(province_name):
                     'aqi': aqi
                 }
 
-    with open(os.path.join(os.path.dirname(__file__), f'../data/processed/{province_name}_maxaqi_time.json'), 'w', encoding='utf-8') as f:
+    with open(os.path.join(os.path.dirname(__file__), '..', 'data', 'processed', f'{province_name}_maxaqi_time.json'), 'w', encoding='utf-8') as f:
         json.dump(daily_max_aqi, f, ensure_ascii=False, indent=4)
 
 if __name__ == "__main__":
