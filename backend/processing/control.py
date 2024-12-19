@@ -9,7 +9,7 @@ def check_latest_all():
         return False
     with open(file_path, 'r', encoding='utf-8') as f:
         lines = f.readlines()
-        if len(lines) < 215:
+        if len(lines) < 10:
             return False
         time = lines[2].split(',')[0]
         formatted_date = datetime.datetime.now().strftime('%Y-%m-%d')
@@ -25,7 +25,7 @@ def check_latest_history(province):
         return False
     with open(file_path, 'r', encoding='utf-8') as f:
         lines = f.readlines()
-        if len(lines) < 240:
+        if len(lines) < 10:
             return False
         time = lines[1].split(',')[0][0:10]
         formatted_date = (datetime.datetime.now() - datetime.timedelta(days=10)).strftime('%Y-%m-%d')
@@ -79,4 +79,6 @@ def update_data(province = 'all', history='false'):
         else:
             fetcher.save_air_quality(province)
             pollution_trend.pollution_trend(province)
-        
+
+if __name__ == '__main__':
+    update_data('all', 'false')
