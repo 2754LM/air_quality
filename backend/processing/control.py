@@ -17,9 +17,9 @@ def update_data(province = 'all', history='false'):
         # 全国主要污染物统计
         pollutants_statistics.pollutants_statistics()
     else:
-        # sleep(1) #测试用
         if history == 'true':
-            fetcher.save_air_quality_history(province)
+            sleep(1) #测试用
+            # fetcher.save_air_quality_history(province)
         else:
             fetcher.save_air_quality(province)
             pollution_trend.pollution_trend(province)
