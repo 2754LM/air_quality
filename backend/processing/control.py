@@ -3,7 +3,7 @@ from backend.crawler.province_fetcher import AirQualityFetcher
 from backend.processing import aqi_ranges, pollutants_all, pollution_all,pollutants_statistics,pollution_trend
 
 
-def update_data(province = 'all'):
+def update_data(province = 'all', history='false'):
     fetcher = AirQualityFetcher()
     if province == 'all':
         # sleep(1) #测试用
@@ -18,9 +18,9 @@ def update_data(province = 'all'):
         pollutants_statistics.pollutants_statistics()
     else:
         # sleep(1) #测试用
-        # fetcher.save_air_quality(province)
-        # fetcher.save_air_quality_history(province)
-        pollution_trend.pollution_trend(province)
-        
-        
+        if history == 'true':
+            fetcher.save_air_quality_history(province)
+        else:
+            fetcher.save_air_quality(province)
+            pollution_trend.pollution_trend(province)
         

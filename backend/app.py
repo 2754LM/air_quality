@@ -29,8 +29,9 @@ def get_processed_file(filename):
 
 class UpdateInfo(BaseModel):
     province_name: str
+    history: str
 
 @app.post("/update")
 async def update_info(update_info: UpdateInfo):
-    control.update_data(update_info.province_name)
+    control.update_data(update_info.province_name, UpdateInfo.history)
     return {"province_name": update_info.province_name}

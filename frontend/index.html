@@ -51,15 +51,18 @@
             load.style.background = 'gray';
             load.disabled = true;
             var province_name = '';
+            var history = 'false';
             if (name == 'update_button_all'){
                 province_name = 'all';
             }else if(name == 'update_button1'){
                 province_name = document.getElementById('city_select_trend').value;
             }else if(name == 'update_button2'){
                 province_name = document.getElementById('city_select_history').value;
+                history = 'true';
             }
             const data = {
-                'province_name' : province_name
+                'province_name' : province_name,
+                'history' : history
             }
             fetch('/update', {
                 method: 'POST',
