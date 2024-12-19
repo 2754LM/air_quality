@@ -56,7 +56,6 @@
             });
         }
 
-
         function load_pollution_all_data() {
             fetch('/data/processed/pollution_all.json')
                 .then(response => response.json())
@@ -335,6 +334,9 @@
 
         document.addEventListener('DOMContentLoaded', load_csv);
 
+        onload = function () {
+            show_page('pollution_all');
+        }
     </script>
 </head>
 
