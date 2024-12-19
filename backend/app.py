@@ -31,6 +31,13 @@ class UpdateInfo(BaseModel):
     province_name: str
     history: str
 
+@app.post("/latest")
+async def check_latest(info: UpdateInfo):
+    if control.check_latest(info.province_name, info.history):
+        return {'flag': 'true'}
+    return {'flag' : 'false'}
+
+
 @app.post("/update")
 async def update_info(info: UpdateInfo):
     control.update_data(info.province_name, info.history)
