@@ -92,11 +92,56 @@ button.query_button:hover {
 button.update_button {
     background: rgba(255, 255, 255, 0.8); 
     border: 2px solid #4CAF50; 
-    position: absolute;
-    left: 20px;
-    top: 20px;
 }
 
 button.update_button:hover {
     transform: scale(1.05); 
+}
+
+.cover-frame {
+    position: relative;
+    min-width: 100%;
+    height: 100vh;
+}
+
+.cover-frame .bg-box {
+    width: 100%;
+    height: 100%;
+}
+
+.cover-frame .bg-box > img {
+    display: block;
+    width: 100vw;
+    height: 100vh;
+    object-fit: cover;
+    object-position: center;
+}
+
+.cover-inner {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -100%);
+    text-align: center;
+    color: #fff;
+}
+
+.cover-inner h1 {
+    font-size: 5rem;
+    margin: 0;
+    opacity: 0.95;
+}
+
+.cover-inner #subtitle-box {
+    font-size: 2rem;
+    margin: 0.5rem 0 1.5rem;
+}
+
+.cover-inner, .cover-inner a {
+    text-decoration: none;
+    color: white;
+}
+
+.cover-inner h1, .cover-inner #subtitle-box {
+    font-family: Titillium Web, PingFang SC, Hiragino Sans GB, Microsoft JhengHei, Microsoft YaHei, Helvetica Neue, Helvetica, Arial, sans-serif;
 }
