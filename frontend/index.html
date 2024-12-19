@@ -411,9 +411,15 @@
                 tooltip: {
                     trigger: 'axis',
                     formatter: function (params) {
-                        return params.map(param =>
-                            `日期: ${param.seriesName}<br/>时间: ${timeLabels[param.dataIndex]}<br/>AQI: ${param.value}`
-                        ).join('<br/>');
+                        return params.map(param => {
+                            const fullDate = param.seriesName; 
+                            const time = timeLabels[param.dataIndex]; 
+
+                            const [year, month, day] = fullDate.split('-');
+                            const [hour] = time.split(':');
+
+                            return `日期: ${month}-${day}<br/>时间: ${hour}:00<br/>AQI: ${param.value}`;
+                        }).join('<br/>');
                     }
                 },
                 legend: {
