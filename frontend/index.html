@@ -10,6 +10,7 @@
         src="https://registry.npmmirror.com/echarts/5.5.1/files/dist/echarts.min.js"></script>
     <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/echarts/map/js/china.js"></script>
     <script>
+        //导航
         function show_page(page_id) {
             var pages = document.querySelectorAll('.page');
             for (var i = 0; i < pages.length; i++) {
@@ -25,7 +26,8 @@
                 load_pollution_primary_data();
             }
         }
-
+        
+        //加载选项
         function load_csv() {
             fetch('/data/province_id.csv').then(response => response.text()).then(data => {
                 var select_history = document.getElementById('city_select_history');
@@ -42,7 +44,8 @@
                 }
             });
         }
-
+        
+        //刷新按钮
         function load_all_data() {
             var load = document.getElementById('update_button_all');
             load.style.background = 'gray';
@@ -55,7 +58,8 @@
                 alert('数据更新成功！');
             });
         }
-
+        
+        // 全国aqi
         function load_pollution_all_data() {
             fetch('/data/processed/pollution_all.json')
                 .then(response => response.json())
@@ -72,23 +76,6 @@
                     update_pollution_all_chart(formattedData);
                 });
         }
-
-        function load_pollution_level_data() {
-            fetch('/data/processed/aqi_ranges.json')
-                .then(response => response.json())
-                .then(data => {
-                    update_pollution_level_chart(data);
-                });
-        }
-
-        function load_pollution_primary_data() {
-            fetch('/data/processed/pollutant_statistics.json')
-                .then(response => response.json())
-                .then(data => {
-                    update_pollution_primary_chart(data);
-                });
-        }
-
         function update_pollution_all_chart(m_data) {
             var my_echarts = echarts.init(document.getElementById("pollution_chart_all"));
             var option = {
@@ -134,6 +121,14 @@
             my_echarts.setOption(option);
         }
 
+        // 全国aqi分档
+        function load_pollution_level_data() {
+            fetch('/data/processed/aqi_ranges.json')
+                .then(response => response.json())
+                .then(data => {
+                    update_pollution_level_chart(data);
+                });
+        }
         function update_pollution_level_chart(m_data) {
             var my_echarts = echarts.init(document.getElementById("pollution_chart_level"));
             var option = {
@@ -160,6 +155,14 @@
             my_echarts.setOption(option);
         }
 
+        // 全国污染物分档
+        function load_pollution_primary_data() {
+            fetch('/data/processed/pollutant_statistics.json')
+                .then(response => response.json())
+                .then(data => {
+                    update_pollution_primary_chart(data);
+                });
+        }
         function update_pollution_primary_chart(m_data) {
             var my_echarts = echarts.init(document.getElementById("pollution_chart_primary"));
             var option = {
@@ -185,7 +188,8 @@
             };
             my_echarts.setOption(option);
         }
-
+ 
+        // 省份未来趋势
         function load_pollution_trend_data() {
             var selectElement = document.getElementById("city_select_trend");
             var province_name = selectElement.value;
@@ -195,7 +199,6 @@
                     update_pollution_trend_chart(data)
                 });
         }
-
         function update_pollution_trend_chart(m_data) {
             var my_echarts = echarts.init(document.getElementById("pollution_chart_trend"));
             option = {
@@ -250,6 +253,7 @@
             my_echarts.setOption(option);
         }
 
+        //省份历史趋势
         function load_pollution_history_data() {
             var selectElement = document.getElementById("city_select_history");
             var province_name = selectElement.value;
@@ -259,7 +263,6 @@
                     update_pollution_history_chart(data);
                 });
         }
-
         function update_pollution_history_chart(m_data) {
             var my_echarts = echarts.init(document.getElementById("pollution_chart_history"));
 
@@ -332,9 +335,8 @@
             my_echarts.setOption(option);
         }
 
-        document.addEventListener('DOMContentLoaded', load_csv);
-
         onload = function () {
+            load_csv();
             show_page('pollution_all');
         }
     </script>

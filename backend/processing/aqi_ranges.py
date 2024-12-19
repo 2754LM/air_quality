@@ -2,7 +2,7 @@ import json
 import os
 
 def aqi_ranges():
-    '''统计全国省份当前污染等级数量'''
+    '''全国aqi分档统计'''
     with open(os.path.join(os.path.dirname(__file__) ,'../data/processed/pollution_all.json'), 'r', encoding='utf-8') as f:
         data = json.load(f)
 

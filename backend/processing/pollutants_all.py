@@ -2,7 +2,7 @@ import json
 import os
 
 def pollutants_all():
-    '''处理全国省份主要污染物'''
+    '''处理全国主要污染物'''
     file_path = os.path.join(os.path.dirname(__file__), '../data/raw/air_quality.csv')
     with open(file_path, 'r', encoding='utf-8') as f:
         data = f.readlines()

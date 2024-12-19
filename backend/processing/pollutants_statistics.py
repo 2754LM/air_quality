@@ -2,7 +2,8 @@ import json
 import os
 from collections import Counter
 
-def pollutant_statistics():
+def pollutants_statistics():
+    '''全国污染物分档统计'''
     with open(os.path.join(os.path.dirname(__file__) ,'../data/processed/pollutants_all.json'), 'r', encoding='utf-8') as f:
         data = json.load(f)
 
