@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>空气质量检测系统</title>
+    <link rel="icon" href="/static/favicon.svg" type="image/x-icon">
+</head>
+<body>
+
+<div id="loginForm">
+    <h2>登录</h2>
+    <label for="username">用户名:</label>
+    <input type="text" id="username" required>
+    <br><br>
+    <label for="password">密码:</label>
+    <input type="password" id="password" required>
+    <br><br>
+    <button onclick="login()">登录</button>
+</div>
+
+<script>
+    function login() {
+        const username = document.getElementById('username').value;
+        const password = document.getElementById('password').value;
+        fetch('/login', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({ username, password })
+        })
+        .then(response => {
+            if (response.ok) {
+                return response.text();
+            } else {
+                alert('登录失败，请检查用户名和密码');
+                throw new Error('登录失败');
+            }
+        }).then(html => {
+            document.open(); 
+            document.write(html); 
+            document.close(); 
+        });
+    }
+</script>
+
+</body>
+</html>
