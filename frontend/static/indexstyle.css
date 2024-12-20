@@ -1,0 +1,147 @@
+body {
+    font-family: Arial, sans-serif;
+    margin: 0;
+    background-color: #f4f4f4;
+    color: #333;
+    display: flex; 
+    flex-direction: column;
+}
+h1{
+    text-align: center;
+}
+nav{
+    text-align: center;
+}
+header {
+    background: #4CAF50;
+    color: white;
+    padding: 15px 20px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+nav button {
+    background: #fff;
+    color: #4CAF50;
+    border: 0px;
+    cursor: pointer;
+    border-radius: 5px;
+}
+
+nav button:hover {
+    background: #e0e0e0;
+    transform: scale(1.05);
+}
+
+main {
+    flex: 1;
+    padding: 20px;
+    overflow: auto;
+}
+
+.page {
+    display: none;
+    background: white;
+    border-radius: 8px;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+    padding: 20px;
+    margin-bottom: 20px;
+}
+
+h2 {
+    color: #4CAF50;
+    margin-top: 0;
+}
+
+.chart {
+    margin-top: 20px;
+    height: 800px;
+    border-radius: 8px;
+    background: #f9f9f9;
+}
+
+select {
+    padding: 10px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    margin-right: 10px;
+}
+
+select:focus {
+    border-color: #4CAF50;
+}
+
+button {
+    padding: 10px 15px;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background 0.3s, transform 0.2s; 
+}
+
+button.query_button {
+    background: rgba(76, 175, 80, 1);
+    color: white;
+    border: none;
+}
+
+button.query_button:hover {
+    background: rgba(69, 160, 73, 1);
+    transform: scale(1.05);
+}
+
+
+button.update_button {
+    background: rgba(255, 255, 255, 0.8); 
+    border: 2px solid #4CAF50; 
+}
+
+button.update_button:hover {
+    transform: scale(1.05); 
+}
+
+.cover-frame {
+    position: relative;
+    min-width: 100%;
+    height: 100vh
+}
+
+.cover-frame .bg-box {
+    width: 100%;
+    height: 100%
+}
+
+.cover-frame .bg-box>img {
+    display: block;
+    width: 100vw;
+    height: 100vh;
+    -o-object-fit: cover;
+    object-fit: cover;
+    -o-object-position: center center;
+    object-position: center center
+}
+
+.cover-inner {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%,-100%)
+}
+
+.cover-inner h1 {
+    font-size: 7rem;
+    margin: 0;
+    opacity: .95
+}
+
+.cover-inner #subtitle-box,.cover-inner h1 {
+    font-family: Titillium Web,PingFang SC,Hiragino Sans GB,Microsoft JhengHei,Microsoft YaHei,Helvetica Neue,Helvetica,Arial,sans-serif
+}
+
+.cover-inner #subtitle-box {
+    font-size: 3rem;
+    margin: .5rem 0 1.5rem
+}
+
+.cover-inner,.cover-inner a {
+    color: #fff;
+    text-decoration: none
+}
