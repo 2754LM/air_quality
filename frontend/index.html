@@ -47,40 +47,46 @@
         }
         
         //加载日期和时间
-        function load_date_time_csv() {
-            const now=new Date();
+    function load_date_time_csv() {
+        const now = new Date();
 
-            const dateList=[];
-            for(let i=-10;i<0;i++){
-                const date=new Date();
-                date.setDate(now.getDate()+i);
-                const month=String(date.getMonth()+1).padStart(2,'0');
-                const day=String(date.getDate()).padStart(2,'0');
-                dateList.push(`${month}-${day}`);
-            }
-            const select_date = document.getElementById('date_select');
-            dateList.forEach(date => {
-                const option = document.createElement('option');
-                option.value = date;
-                option.textContent = date;
-                select_date.appendChild(option);
-            });
+        const dateList = [];
+        for (let i = -10; i < 0; i++) {
+            const date = new Date();
+            date.setDate(now.getDate() + i);
+            const month = String(date.getMonth() + 1).padStart(2, '0');
+            const day = String(date.getDate()).padStart(2, '0');
+            dateList.push(`${month}-${day}`);
+        }
 
-            const timeList = [
-                '00:00', '01:00', '02:00', '03:00', '04:00', '05:00',
-                '06:00', '07:00', '08:00', '09:00', '10:00', '11:00',
-                '12:00', '13:00', '14:00', '15:00', '16:00', '17:00',
-                '18:00', '19:00', '20:00', '21:00', '22:00', '23:00'
-            ];
+        const select_date = document.getElementById('date_select');
+        select_date.setAttribute('min', 0);
+        select_date.setAttribute('max', dateList.length - 1);
+        select_date.setAttribute('value', 0);
 
-            const select_time = document.getElementById('time_select');
-            timeList.forEach(time => {
-                const option = document.createElement('option');
-                option.value = time;
-                option.textContent = time;
-                select_time.appendChild(option);
-            });
-        }    
+        const timeList = [
+            '00:00', '01:00', '02:00', '03:00', '04:00', '05:00',
+            '06:00', '07:00', '08:00', '09:00', '10:00', '11:00',
+            '12:00', '13:00', '14:00', '15:00', '16:00', '17:00',
+            '18:00', '19:00', '20:00', '21:00', '22:00', '23:00'
+        ];
+
+        const select_time = document.getElementById('time_select');
+        select_time.setAttribute('min', 0);
+        select_time.setAttribute('max', timeList.length - 1);
+        select_time.setAttribute('value', 0);
+
+        select_date.addEventListener('input', function () {
+            const selectedDate = dateList[select_date.value];
+            document.getElementById('selected_date').textContent = selectedDate;
+        });
+
+        select_time.addEventListener('input', function () {
+            const selectedTime = timeList[select_time.value];
+            document.getElementById('selected_time').textContent = selectedTime;
+        });
+    }
+ 
 
         //刷新数据
         function load_data(id_name) {
@@ -513,8 +519,8 @@
             var selectElement = document.getElementById("city_select_history");
             var province_name = selectElement.value;
             var currentYear = new Date().getFullYear();
-            var selectedDate = `${currentYear}-${document.getElementById("date_select").value}`;
-            var selectedTime = document.getElementById("time_select").value;
+            var selectedDate = `${currentYear}-${document.getElementById("selected_date").textContent}`;
+            var selectedTime = document.getElementById("selected_time").textContent;
             fetch(`/data/processed/${province_name}_aqitype.json`)
                 .then(response => response.json())
                 .then(data => {
@@ -650,8 +656,10 @@
             <div class="chart" id="pollution_chart_hourly"></div>
             <div class="chart" id="pollution_chart_type"></div>
             <div> 
-                <select id="date_select" onchange="load_pollution_type_data()"></select>
-                <select id="time_select" onchange="load_pollution_type_data()"></select>
+                <input type="range" id="date_select" onchange="load_pollution_type_data()">
+                <p>日期: <span id="selected_date"></span></p>
+                <input type="range" id="time_select" onchange="load_pollution_type_data()">
+                <p>时间: <span id="selected_time"></span></p>
             </div>
         </div>
     </main>
