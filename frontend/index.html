@@ -6,7 +6,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>空气质量检测系统</title>
     <link rel="icon" href="/static/favicon.svg" type="image/x-icon">
-    <link rel="stylesheet" href="/static/indexstyle.css">
+    <link rel="stylesheet" href="/static/style.css">
     <script type="text/javascript"
         src="https://registry.npmmirror.com/echarts/5.5.1/files/dist/echarts.min.js"></script>
     <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/echarts/map/js/china.js"></script>
@@ -47,46 +47,43 @@
         }
         
         //加载日期和时间
-        function load_date_time_csv() {
-        const now = new Date();
+            function load_date_time_csv() {
+                const now = new Date();
 
-        const dateList = [];
-        for (let i = -10; i < 0; i++) {
-            const date = new Date();
-            date.setDate(now.getDate() + i);
-            const month = String(date.getMonth() + 1).padStart(2, '0');
-            const day = String(date.getDate()).padStart(2, '0');
-            dateList.push(`${month}-${day}`);
-        }
+                // 构造日期和时间的组合列表
+                const dateTimeList = [];
+                for (let i = -10; i < 0; i++) {
+                    const date = new Date();
+                    date.setDate(now.getDate() + i);
+                    const month = String(date.getMonth() + 1).padStart(2, '0');
+                    const day = String(date.getDate()).padStart(2, '0');
 
-        const select_date = document.getElementById('date_select');
-        select_date.setAttribute('min', 0);
-        select_date.setAttribute('max', dateList.length - 1);
-        select_date.setAttribute('value', 0);
+                    for (let hour = 0; hour < 24; hour++) {
+                        const time = `${String(hour).padStart(2, '0')}:00`;
+                        dateTimeList.push(`${month}-${day} ${time}`);
+                    }
+                }
 
-        const timeList = [
-            '00:00', '01:00', '02:00', '03:00', '04:00', '05:00',
-            '06:00', '07:00', '08:00', '09:00', '10:00', '11:00',
-            '12:00', '13:00', '14:00', '15:00', '16:00', '17:00',
-            '18:00', '19:00', '20:00', '21:00', '22:00', '23:00'
-        ];
+                // 获取输入范围滑块和显示选定值的元素
+                const selectDateTime = document.getElementById('select_date_time');
+                const selectedDateTime = document.getElementById('selected_date_time');
 
-        const select_time = document.getElementById('time_select');
-        select_time.setAttribute('min', 0);
-        select_time.setAttribute('max', timeList.length - 1);
-        select_time.setAttribute('value', 0);
+                // 设置滑块属性
+                selectDateTime.setAttribute('min', 0);
+                selectDateTime.setAttribute('max', dateTimeList.length - 1);
+                selectDateTime.setAttribute('value', 0);
 
-        select_date.addEventListener('input', function () {
-            const selectedDate = dateList[select_date.value];
-            document.getElementById('selected_date').textContent = selectedDate;
-        });
+                // 初始化显示
+                selectedDateTime.textContent = dateTimeList[0];
 
-        select_time.addEventListener('input', function () {
-            const selectedTime = timeList[select_time.value];
-            document.getElementById('selected_time').textContent = selectedTime;
-        });
-    }
+                // 监听滑块的变化
+                selectDateTime.addEventListener('input', function () {
+                    const selectedValue = dateTimeList[selectDateTime.value];
+                    selectedDateTime.textContent = selectedValue;
+                });
+            }
  
+
         //刷新数据
         function load_data(id_name) {
             var load = document.getElementById(id_name);
@@ -514,20 +511,24 @@
         }
 
         //省份历史趋势(雷达图)
-        function load_pollution_type_data() {
-            var selectElement = document.getElementById("city_select_history");
-            var province_name = selectElement.value;
-            var currentYear = new Date().getFullYear();
-            var selectedDate = `${currentYear}-${document.getElementById("selected_date").textContent}`;
-            var selectedTime = document.getElementById("selected_time").textContent;
-            fetch(`/data/processed/${province_name}_aqitype.json`)
-                .then(response => response.json())
-                .then(data => {
-                    update_pollution_type_chart(data, selectedDate, selectedTime);
-                })
-        }
-        function update_pollution_type_chart(m_data, selectedDate, selectedTime) {
-                var my_echarts = echarts.init(document.getElementById("pollution_chart_type"));
+    function load_pollution_type_data() {
+        var selectElement = document.getElementById("city_select_history");
+        var province_name = selectElement.value;
+
+        var selectedDateTime = document.getElementById("selected_date_time").textContent;
+        var [selectedDate, selectedTime] = selectedDateTime.split(' ');
+        var currentYear=new Date().getFullYear();
+        selectedDate= `${currentYear}-${selectedDate}`;
+
+        fetch(`/data/processed/${province_name}_aqitype.json`)
+            .then(response => response.json())
+            .then(data => {
+                update_pollution_type_chart(data, selectedDate, selectedTime);
+            });
+    }
+
+    function update_pollution_type_chart(m_data, selectedDate, selectedTime) {
+        var my_echarts = echarts.init(document.getElementById("pollution_chart_type"));
 
         var pollutionData = m_data[selectedDate][selectedTime];
         var radarData = [
@@ -541,6 +542,7 @@
 
         var pollutionNames = ['PM10', 'PM2.5', 'NO2', 'SO2', 'CO', 'O3'];
 
+        // 配置雷达图
         var option = {
             title: {
                 text: `污染物浓度雷达图\n日期: ${selectedDate}, 时间: ${selectedTime}`
@@ -551,7 +553,7 @@
                     let tooltipContent = pollutionNames.map((name, index) => {
                         return `${name}: ${radarData[index]} μg/m³`;
                     }).join('<br>');
-                    return tooltipContent; 
+                    return tooltipContent;
                 }
             },
             radar: {
@@ -578,23 +580,22 @@
             ]
         };
 
-                // 设置图表配置
-                my_echarts.setOption(option);
-            }
+        my_echarts.setOption(option);
+    }
+
 
         onload = function () {
             load_csv();
             load_date_time_csv();
             show_page('pollution_all');
         }
-    
     </script>
 </head>
 
 <body>
     <section class="cover-frame">
           <div class="bg-box">
-            <img src="/static/2.png" alt="image frame">
+            <img src="/static/1.jpg" alt="image frame">
           </div>
           <div class="cover-inner">
             <h1><a href="/">AIR</a></h1>
@@ -656,10 +657,8 @@
             <div class="chart" id="pollution_chart_hourly"></div>
             <div class="chart" id="pollution_chart_type"></div>
             <div> 
-                <input type="range" id="date_select" oninput="load_pollution_type_data()">
-                <p>日期: <span id="selected_date"></span></p>
-                <input type="range" id="time_select" oninput="load_pollution_type_data()">
-                <p>时间: <span id="selected_time"></span></p>
+                <input type="range" id="select_date_time" onchange="load_pollution_type_data()">
+                <p>日期: <span id="selected_date_time"></span></p>
             </div>
         </div>
     </main>
