@@ -16,32 +16,37 @@
             document.body.style.backgroundImage = `url('/static/${images[Math.floor(Math.random() * images.length)]}')`;
         }
         function login() {
-        const username = document.getElementById('username').value;
-        const password = document.getElementById('password').value;
-        const rember = document.getElementById('remember').value;
-        const data = {
-            'username' : username,
-            'password' : password,
-            'rember' : rember
-        };
-        fetch('/login', {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json'
-            },
-            body: JSON.stringify(data)
-        }).then(response => {
-            if (response.ok) {
-                return response.json();
-            } else {
-                alert('登录失败，请检查用户名和密码');
-                throw new Error('登录失败');
-            }
-        }).then(data => {
-            localStorage.setItem('token', data.token);
-            init();
-        });
-    }
+            const username = document.getElementById('username').value;
+            const password = document.getElementById('password').value;
+            const rember = document.getElementById('remember').value;
+            const data = {
+                'username' : username,
+                'password' : password,
+                'rember' : rember
+            };
+            fetch('/login', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify(data)
+            }).then(response => {
+                if (response.ok) {
+                    return response.json();
+                } else {
+                    alert('登录失败，请检查用户名和密码');
+                    throw new Error('登录失败');
+                }
+            }).then(data => {
+                localStorage.setItem('token', data.token);
+                init();
+            });
+        }
+        function register(){
+            alert('未完成');
+            return;
+            
+        }
         function init(){
             const token = localStorage.getItem('token');
             if (token) {
@@ -91,12 +96,13 @@
             <option value="60">60分钟</option>
             <option value="1440">1天</option>
             <option value="43200">15天</option>
-            <option value="0">不记住</option>
         </select>
         <br>
-        <button onclick="login()">登录</button>
-        <p>功能完善中，可以用测试账号体验<br>用户名：admin 密码：admin</p>
-
+        <div style="display: flex; gap: 10px; margin-top: 20px;">
+            <button onclick="login()">登陆</button>
+            <button onclick="register()">注册</button>
+        </div>
+        <p>注册功能完善中，可以用测试账号体验<br>用户名：admin 密码：admin</p>
     </div>
 </body>
 </html>
