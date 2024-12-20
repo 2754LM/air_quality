@@ -5,32 +5,17 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>空气质量检测系统</title>
     <link rel="icon" href="/static/favicon.svg" type="image/x-icon">
-</head>
-<body>
-
-<div id="loginForm"  style="display: none;">
-    <h2>登录</h2>
-    <label for="username">用户名:</label>
-    <input type="text" id="username" required>
-    <br>
-    <label for="password">密码: </label>
-    <input type="password" id="password" required>
-    <br>
-    <label for="checkbox">记住登陆状态时间:</label>
-    <select id="remember">
-        <option value="15">15分钟</option>
-        <option value="60">60分钟</option>
-        <option value="1440">1天</option>
-        <option value="43200">15天</option>
-        <option value="0">不记住</option>
-    </select>
-    <br>
-    <button onclick="login()">登录</button>
-    <p>功能完善中，可以用测试账号体验<br>用户名：admin 密码：admin</p>
-</div>
-
-<script>
-    function login() {
+    <link rel="stylesheet" href="/static/loginstyle.css">
+    <script>
+        const images = [
+            '2.png',
+            '3.jpg',
+            '4.jpg'
+        ];
+        function setRandomBackground() {
+            document.body.style.backgroundImage = `url('/static/${images[Math.floor(Math.random() * images.length)]}')`;
+        }
+        function login() {
         const username = document.getElementById('username').value;
         const password = document.getElementById('password').value;
         const rember = document.getElementById('remember').value;
@@ -57,36 +42,60 @@
             init();
         });
     }
-    function init(){
-        const token = localStorage.getItem('token');
-        if (token) {
-            fetch('/protected', {
-                method: 'GET',
-                headers: {
-                    'Authorization': `${token}`
-                }
-            }).then(response => {
-                if (response.ok) {
-                    return response.text();
-                } else {
-                    localStorage.removeItem('token');
-                    alert('登陆已超时, 请重新登录');
-                    document.getElementById('loginForm').style.display = 'block';
-                    throw new Error('登录失败');
-                }
-            }).then(data => {
-                document.open();
-                document.write(data);
-                document.close();
-            });
-        }else{
-            document.getElementById('loginForm').style.display = 'block';
+        function init(){
+            const token = localStorage.getItem('token');
+            if (token) {
+                fetch('/protected', {
+                    method: 'GET',
+                    headers: {
+                        'Authorization': `${token}`
+                    }
+                }).then(response => {
+                    if (response.ok) {
+                        return response.text();
+                    } else {
+                        localStorage.removeItem('token');
+                        alert('登陆已超时, 请重新登录');
+                        document.getElementById('loginForm').style.display = 'block';
+                        throw new Error('登录失败');
+                    }
+                }).then(data => {
+                    document.open();
+                    document.write(data);
+                    document.close();
+                });
+            }else{
+                document.getElementById('loginForm').style.display = 'block';
+            }
         }
-    }
-    window.onload = async function() {
-        init();
-    };
-</script>
+        window.onload = async function() {
+            init();
+            setRandomBackground();
+        };
+    </script>
+</head> 
 
+<body>
+    <div id="loginForm"  style="display: none;">
+        <h1>AIR</h1>
+        <label for="username">用户名:</label>
+        <input type="text" id="username" required>
+        <br>
+        <label for="password">密码: </label>
+        <input type="password" id="password" required>
+        <br>
+        <label for="checkbox">记住登陆状态时间:</label>
+        <select id="remember">
+            <option value="15">15分钟</option>
+            <option value="60">60分钟</option>
+            <option value="1440">1天</option>
+            <option value="43200">15天</option>
+            <option value="0">不记住</option>
+        </select>
+        <br>
+        <button onclick="login()">登录</button>
+        <p>功能完善中，可以用测试账号体验<br>用户名：admin 密码：admin</p>
+
+    </div>
 </body>
 </html>
