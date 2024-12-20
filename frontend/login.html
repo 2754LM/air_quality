@@ -56,6 +56,7 @@
                     } else {
                         localStorage.removeItem('token');
                         alert('登陆已超时, 请重新登录');
+                        setRandomBackground();
                         document.getElementById('loginForm').style.display = 'block';
                         throw new Error('登录失败');
                     }
@@ -65,11 +66,11 @@
                     document.close();
                 });
             }else{
+                setRandomBackground();
                 document.getElementById('loginForm').style.display = 'block';
             }
         }
         window.onload = async function() {
-            setRandomBackground();
             init();
         };
     </script>
