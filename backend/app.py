@@ -1,14 +1,12 @@
 import sys
 import os
-
-from pydantic import BaseModel # pylint: disable=no-name-in-module
-
+from pydantic import BaseModel
 sys.path.append(os.path.join(os.path.dirname(os.path.abspath(__file__)), '..'))
-from fastapi import FastAPI, HTTPException
+from fastapi import  FastAPI, HTTPException, Header
 from fastapi.responses import FileResponse, HTMLResponse
 from fastapi.staticfiles import StaticFiles
 from backend.processing import control
-from backend import mysql
+from backend import mysql,token_manger
 
 app = FastAPI()
 app.mount("/static", StaticFiles(directory=os.path.join(os.path.dirname(os.path.abspath(__file__)), '../frontend/static')), name="static")
@@ -22,15 +20,25 @@ def get_chart():
 class LoginInfo(BaseModel):
     username: str
     password: str
+    rember: str
 @app.post("/login")
 def login(info : LoginInfo):
     if mysql.check_user(info.username,info.password):
-        file_path = os.path.join(os.path.dirname(__file__), '..', 'frontend', 'index.html')
-        with open(file_path, 'r', encoding='utf-8') as f:
-            return HTMLResponse(content=f.read())
+        token = token_manger.create_access_token(data={"username": info.username, "password": info.password}, timeout = int(info.rember))
+        return {'token': token}
     else:
         raise HTTPException(status_code=401, detail="用户名或密码错误")
-
+    
+@app.get("/protected")
+async def read_protected(authorization: str = Header(None)):
+    if authorization is None:
+        raise HTTPException(status_code=401, detail="无效的凭证")
+    token = authorization
+    if token_manger.decode_jwt(token) == None:
+        raise HTTPException(status_code=401, detail="无效的凭证")
+    file_path = os.path.join(os.path.dirname(__file__), '..', 'frontend', 'index.html')
+    with open(file_path, 'r', encoding='utf-8') as f:
+        return HTMLResponse(content=f.read())
 
 @app.get("/data/{filename}")
 def get_file(filename):

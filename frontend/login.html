@@ -8,41 +8,84 @@
 </head>
 <body>
 
-<div id="loginForm">
+<div id="loginForm"  style="display: none;">
     <h2>登录</h2>
     <label for="username">用户名:</label>
     <input type="text" id="username" required>
-    <br><br>
-    <label for="password">密码:</label>
+    <br>
+    <label for="password">密码: </label>
     <input type="password" id="password" required>
-    <br><br>
+    <br>
+    <label for="checkbox">记住登陆状态时间:</label>
+    <select id="remember">
+        <option value="15">15分钟</option>
+        <option value="60">60分钟</option>
+        <option value="1440">1天</option>
+        <option value="43200">15天</option>
+        <option value="0">不记住</option>
+    </select>
+    <br>
     <button onclick="login()">登录</button>
+    <p>功能完善中，可以用测试账号体验<br>用户名：admin 密码：admin</p>
 </div>
 
 <script>
     function login() {
         const username = document.getElementById('username').value;
         const password = document.getElementById('password').value;
+        const rember = document.getElementById('remember').value;
+        const data = {
+            'username' : username,
+            'password' : password,
+            'rember' : rember
+        };
         fetch('/login', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json'
             },
-            body: JSON.stringify({ username, password })
-        })
-        .then(response => {
+            body: JSON.stringify(data)
+        }).then(response => {
             if (response.ok) {
-                return response.text();
+                return response.json();
             } else {
                 alert('登录失败，请检查用户名和密码');
                 throw new Error('登录失败');
             }
-        }).then(html => {
-            document.open(); 
-            document.write(html); 
-            document.close(); 
+        }).then(data => {
+            localStorage.setItem('token', data.token);
+            init();
         });
     }
+    function init(){
+        const token = localStorage.getItem('token');
+        if (token) {
+            fetch('/protected', {
+                method: 'GET',
+                headers: {
+                    'Authorization': `${token}`
+                }
+            }).then(response => {
+                if (response.ok) {
+                    return response.text();
+                } else {
+                    localStorage.removeItem('token');
+                    alert('登陆已超时, 请重新登录');
+                    document.getElementById('loginForm').style.display = 'block';
+                    throw new Error('登录失败');
+                }
+            }).then(data => {
+                document.open();
+                document.write(data);
+                document.close();
+            });
+        }else{
+            document.getElementById('loginForm').style.display = 'block';
+        }
+    }
+    window.onload = async function() {
+        init();
+    };
 </script>
 
 </body>

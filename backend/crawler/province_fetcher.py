@@ -6,8 +6,8 @@ import os
 class AirQualityFetcher:
     '''查省份历史调这个'''
     # 免费key48818d97c7ef4245986eb0e924302b46
-    # 付费key = "f9c84f861f284023b5d949cdf3579dc3"
-    def __init__(self, province_id_file="../data/province_id.csv", key="f9c84f861f284023b5d949cdf3579dc3"):
+    # 付费key = "66f407dfc6294c938af190e95036383b"
+    def __init__(self, province_id_file="../data/province_id.csv", key="66f407dfc6294c938af190e95036383b"):
         """
         province_id_file (str): 省份ID路径。
         key (str): 和风天气key。
