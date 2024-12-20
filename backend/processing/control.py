@@ -1,8 +1,7 @@
-from asyncio import sleep
 import datetime
 import os
 from backend.crawler.province_fetcher import AirQualityFetcher
-from backend.processing import aqi_byhour, aqi_ranges, maxaqi_time, pollutants_all, pollution_all,pollutants_statistics,pollution_trend
+from backend.processing import aqi_byhour, aqi_ranges, aqi_types, maxaqi_time, pollutants_all, pollution_all,pollutants_statistics,pollution_trend
 def check_latest_all():
     file_path = os.path.join(os.path.dirname(__file__), '..', 'data', 'raw', 'air_quality.csv')
     if os.path.exists(file_path) == False:
@@ -61,7 +60,6 @@ def check_latest(province = 'all', history='false'):
 def update_data(province = 'all', history='false'):
     fetcher = AirQualityFetcher()
     if province == 'all':
-        # sleep(1) #测试用
         fetcher.save_all_air_quality()
         # 全国aqi
         pollution_all.pollution_all()
@@ -76,6 +74,7 @@ def update_data(province = 'all', history='false'):
             fetcher.save_air_quality_history(province)
             maxaqi_time.process_aqi_data_simple(province)
             aqi_byhour.process_aqi_byhour(province)
+            aqi_types.process_aqi_type(province)
         else:
             fetcher.save_air_quality(province)
             pollution_trend.pollution_trend(province)
