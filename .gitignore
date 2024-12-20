@@ -2,3 +2,5 @@
 .vscode/
 __pycache__/
 __pycache__/
+backend/data/processed/
+backend/data/raw/
