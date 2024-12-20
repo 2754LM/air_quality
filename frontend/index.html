@@ -47,7 +47,7 @@
         }
         
         //加载日期和时间
-            function load_date_time_csv() {
+        function load_date_time_csv() {
                 const now = new Date();
 
                 // 构造日期和时间的组合列表
@@ -82,7 +82,6 @@
                     selectedDateTime.textContent = selectedValue;
                 });
             }
- 
 
         //刷新数据
         function load_data(id_name) {
@@ -526,7 +525,6 @@
                     update_pollution_type_chart(data, selectedDate, selectedTime);
                 });
         }
-
         function update_pollution_type_chart(m_data, selectedDate, selectedTime) {
             var my_echarts = echarts.init(document.getElementById("pollution_chart_type"));
 
@@ -582,7 +580,6 @@
 
             my_echarts.setOption(option);
         }
-
 
         onload = function () {
             load_csv();
@@ -684,7 +681,7 @@
 <body>
     <section class="cover-frame">
           <div class="bg-box">
-            <img src="/static/1.jpg" alt="image frame">
+            <img src="/static/2.png" alt="image frame">
           </div>
           <div class="cover-inner">
             <h1><a href="/">AIR</a></h1>
