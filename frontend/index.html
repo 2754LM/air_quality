@@ -511,77 +511,77 @@
         }
 
         //省份历史趋势(雷达图)
-    function load_pollution_type_data() {
-        var selectElement = document.getElementById("city_select_history");
-        var province_name = selectElement.value;
+        function load_pollution_type_data() {
+            var selectElement = document.getElementById("city_select_history");
+            var province_name = selectElement.value;
 
-        var selectedDateTime = document.getElementById("selected_date_time").textContent;
-        var [selectedDate, selectedTime] = selectedDateTime.split(' ');
-        var currentYear=new Date().getFullYear();
-        selectedDate= `${currentYear}-${selectedDate}`;
+            var selectedDateTime = document.getElementById("selected_date_time").textContent;
+            var [selectedDate, selectedTime] = selectedDateTime.split(' ');
+            var currentYear=new Date().getFullYear();
+            selectedDate= `${currentYear}-${selectedDate}`;
 
-        fetch(`/data/processed/${province_name}_aqitype.json`)
-            .then(response => response.json())
-            .then(data => {
-                update_pollution_type_chart(data, selectedDate, selectedTime);
-            });
-    }
+            fetch(`/data/processed/${province_name}_aqitype.json`)
+                .then(response => response.json())
+                .then(data => {
+                    update_pollution_type_chart(data, selectedDate, selectedTime);
+                });
+        }
 
-    function update_pollution_type_chart(m_data, selectedDate, selectedTime) {
-        var my_echarts = echarts.init(document.getElementById("pollution_chart_type"));
+        function update_pollution_type_chart(m_data, selectedDate, selectedTime) {
+            var my_echarts = echarts.init(document.getElementById("pollution_chart_type"));
 
-        var pollutionData = m_data[selectedDate][selectedTime];
-        var radarData = [
-            pollutionData["PM10"] || 0,
-            pollutionData["PM2.5"] || 0,
-            pollutionData["NO2"] || 0,
-            pollutionData["SO2"] || 0,
-            pollutionData["CO"] || 0,
-            pollutionData["O3"] || 0
-        ];
+            var pollutionData = m_data[selectedDate][selectedTime];
+            var radarData = [
+                pollutionData["PM10"] || 0,
+                pollutionData["PM2.5"] || 0,
+                pollutionData["NO2"] || 0,
+                pollutionData["SO2"] || 0,
+                pollutionData["CO"] || 0,
+                pollutionData["O3"] || 0
+            ];
 
-        var pollutionNames = ['PM10', 'PM2.5', 'NO2', 'SO2', 'CO', 'O3'];
+            var pollutionNames = ['PM10', 'PM2.5', 'NO2', 'SO2', 'CO', 'O3'];
 
         // 配置雷达图
-        var option = {
-            title: {
-                text: `污染物浓度雷达图\n日期: ${selectedDate}, 时间: ${selectedTime}`
-            },
-            tooltip: {
-                trigger: 'item',
-                formatter: function (params) {
-                    let tooltipContent = pollutionNames.map((name, index) => {
-                        return `${name}: ${radarData[index]} μg/m³`;
-                    }).join('<br>');
-                    return tooltipContent;
-                }
-            },
-            radar: {
-                indicator: [
-                    { name: 'PM10', max: 200 },
-                    { name: 'PM2.5', max: 200 },
-                    { name: 'NO2', max: 200 },
-                    { name: 'SO2', max: 50 },
-                    { name: 'CO', max: 10 },
-                    { name: 'O3', max: 200 }
-                ]
-            },
-            series: [
-                {
-                    name: '污染物浓度',
-                    type: 'radar',
-                    data: [
-                        {
-                            value: radarData,
-                            name: '污染物浓度'
-                        }
+            var option = {
+                title: {
+                    text: `污染物浓度雷达图\n日期: ${selectedDate}, 时间: ${selectedTime}`
+                },
+                tooltip: {
+                    trigger: 'item',
+                    formatter: function (params) {
+                        let tooltipContent = pollutionNames.map((name, index) => {
+                            return `${name}: ${radarData[index]} μg/m³`;
+                        }).join('<br>');
+                        return tooltipContent;
+                    }
+                },
+                radar: {
+                    indicator: [
+                        { name: 'PM10', max: 200 },
+                        { name: 'PM2.5', max: 200 },
+                        { name: 'NO2', max: 200 },
+                        { name: 'SO2', max: 50 },
+                        { name: 'CO', max: 10 },
+                        { name: 'O3', max: 200 }
                     ]
-                }
-            ]
-        };
+                },
+                series: [
+                    {
+                        name: '污染物浓度',
+                        type: 'radar',
+                        data: [
+                            {
+                                value: radarData,
+                                name: '污染物浓度'
+                            }
+                        ]
+                    }
+                ]
+            };
 
-        my_echarts.setOption(option);
-    }
+            my_echarts.setOption(option);
+        }
 
 
         onload = function () {
@@ -589,6 +589,95 @@
             load_date_time_csv();
             show_page('pollution_all');
         }
+
+    let isPlaying = false; // 播放状态
+    let intervalId = null; // 定时器ID
+
+    document.addEventListener('DOMContentLoaded', function () {
+        const playButton = document.getElementById('play_button');
+        const rangeInput = document.getElementById('select_date_time'); 
+        const rangeSpan = document.getElementById('selected_date_time');
+
+        const times = generateTimeValues(); 
+        rangeInput.max = times.length - 1;
+
+        // 初始化显示
+        rangeInput.value = 0; 
+        rangeSpan.textContent = times[0];
+
+        // 播放按钮点击事件
+        playButton.addEventListener('click', function () {
+            const span = this.querySelector('span');
+
+            if (!isPlaying) {
+                // 切换到暂停图标
+                isPlaying = true;
+                span.style.borderLeft = '';
+                span.style.borderTop = '10px solid white';
+                span.style.borderBottom = '10px solid white';
+                span.style.height = '0';
+                span.style.width = '15px';
+                span.style.backgroundColor = 'white';
+                span.style.left = 'calc(50%)';
+
+                intervalId = setInterval(() => {
+                    if (parseInt(rangeInput.value) < parseInt(rangeInput.max)) {
+                        rangeInput.value = parseInt(rangeInput.value) + 1;
+                        updateTimeDisplay();
+                        load_pollution_type_data();
+                         // 更新显示内容
+                    } else {
+                        clearInterval(intervalId); 
+                        intervalId = null;
+                        isPlaying = false;
+                        resetPlayButtonIcon(span);
+                    }
+                }, 200); 
+            } else {
+                // 停止播放
+                clearInterval(intervalId);
+                intervalId = null;
+                isPlaying = false;
+                resetPlayButtonIcon(span);
+            }
+        });
+
+        rangeInput.addEventListener('input', updateTimeDisplay);
+
+        function updateTimeDisplay() {
+            const index = parseInt(rangeInput.value);
+            rangeSpan.textContent = times[index];
+        }
+    });
+
+    function resetPlayButtonIcon(span) {
+        span.style.borderLeft = '17px solid white';
+        span.style.borderTop = '10px solid transparent';
+        span.style.borderBottom = '10px solid transparent';
+        span.style.width = '0';
+        span.style.height = '0';
+        span.style.backgroundColor = 'transparent';
+        span.style.left = '55%';
+    }
+
+    function generateTimeValues() {
+        const times = [];
+        const today = new Date();
+
+        for (let i = -10; i <10; i++) {
+            const date = new Date(today);
+            date.setDate(today.getDate() +i); 
+            const dateString = `${(date.getMonth() + 1).toString().padStart(2, '0')}-${date.getDate().toString().padStart(2, '0')}`;
+
+            for (let h = 0; h < 24; h++) {
+                const hour = h.toString().padStart(2, '0');
+                times.push(`${dateString} ${hour}:00`);
+            }
+        }
+
+        return times;
+    }
+
     </script>
 </head>
 
@@ -651,13 +740,18 @@
             <h2>查询省份历史污染分析</h2>
             <select id="city_select_history"></select>
             <button class="query_button"
-                onclick="load_pollution_history_data();load_pollution_hourly_data();load_pollution_type_data()">查询</button>
+                onclick="load_pollution_history_data();load_pollution_hourly_data()">查询</button>
                 <button class="query_button" id = "update_button2" onclick="load_data('update_button2')">更新</button>
             <div class="chart" id="pollution_chart_history"></div>
             <div class="chart" id="pollution_chart_hourly"></div>
             <div class="chart" id="pollution_chart_type"></div>
-            <div> 
-                <input type="range" id="select_date_time" onchange="load_pollution_type_data()">
+            <div style="display: flex;align-items:center;gap: 10px;">
+                <button id="play_button" 
+                    style="position: relative; width: 50px; height: 50px; background-color: #3d86a0; border: none; border-radius: 50%; cursor: pointer; outline: none;">
+                    <span
+                        style="position: absolute; left: 55%; top: 50%; transform: translate(-50%, -50%); width: 0; height: 0; border-left: 17px solid white; border-top: 10px solid transparent; border-bottom: 10px solid transparent;"></span>
+                </button> 
+                <input type="range" id="select_date_time" style="flex:1;" onchange="load_pollution_type_data()">
                 <p>日期: <span id="selected_date_time"></span></p>
             </div>
         </div>
