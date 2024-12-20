@@ -524,51 +524,54 @@
         function update_pollution_type_chart(m_data, selectedDate, selectedTime) {
                 var my_echarts = echarts.init(document.getElementById("pollution_chart_type"));
 
-                // 提取污染物浓度数据
-                var pollutionData = m_data[selectedDate][selectedTime];
-                var radarData = [
-                    pollutionData["PM10"] || 0,
-                    pollutionData["PM2.5"] || 0,
-                    pollutionData["NO2"] || 0,
-                    pollutionData["SO2"] || 0,
-                    pollutionData["CO"] || 0,
-                    pollutionData["O3"] || 0
-                ];
+        var pollutionData = m_data[selectedDate][selectedTime];
+        var radarData = [
+            pollutionData["PM10"] || 0,
+            pollutionData["PM2.5"] || 0,
+            pollutionData["NO2"] || 0,
+            pollutionData["SO2"] || 0,
+            pollutionData["CO"] || 0,
+            pollutionData["O3"] || 0
+        ];
 
-                // 定义雷达图的配置项
-                var option = {
-                    title: {
-                        text: `污染物浓度雷达图\n日期: ${selectedDate}, 时间: ${selectedTime}`
-                    },
-                    tooltip: {
-                        trigger: 'item',
-                        formatter: function (params) {
-                            return params.name + ': ' + params.value;
-                        }
-                    },
-                    radar: {
-                        indicator: [
-                            { name: 'PM10', max: 200 },
-                            { name: 'PM2.5', max: 200 },
-                            { name: 'NO2', max: 200 },
-                            { name: 'SO2', max: 50 },
-                            { name: 'CO', max: 10 },
-                            { name: 'O3', max: 200 }
-                        ]
-                    },
-                    series: [
+        var pollutionNames = ['PM10', 'PM2.5', 'NO2', 'SO2', 'CO', 'O3'];
+
+        var option = {
+            title: {
+                text: `污染物浓度雷达图\n日期: ${selectedDate}, 时间: ${selectedTime}`
+            },
+            tooltip: {
+                trigger: 'item',
+                formatter: function (params) {
+                    let tooltipContent = pollutionNames.map((name, index) => {
+                        return `${name}: ${radarData[index]} μg/m³`;
+                    }).join('<br>');
+                    return tooltipContent; 
+                }
+            },
+            radar: {
+                indicator: [
+                    { name: 'PM10', max: 200 },
+                    { name: 'PM2.5', max: 200 },
+                    { name: 'NO2', max: 200 },
+                    { name: 'SO2', max: 50 },
+                    { name: 'CO', max: 10 },
+                    { name: 'O3', max: 200 }
+                ]
+            },
+            series: [
+                {
+                    name: '污染物浓度',
+                    type: 'radar',
+                    data: [
                         {
-                            name: '污染物浓度',
-                            type: 'radar',
-                            data: [
-                                {
-                                    value: radarData,
-                                    name: '浓度'
-                                }
-                            ]
+                            value: radarData,
+                            name: '污染物浓度'
                         }
                     ]
-                };
+                }
+            ]
+        };
 
                 // 设置图表配置
                 my_echarts.setOption(option);
