@@ -33,19 +33,52 @@
             }).then(response => {
                 if (response.ok) {
                     return response.json();
-                } else {
-                    alert('登录失败，请检查用户名和密码');
+                }else{
                     throw new Error('登录失败');
                 }
             }).then(data => {
                 localStorage.setItem('token', data.token);
                 init();
+            }).catch(error => {
+                alert('登录失败，请检查用户名和密码');
             });
         }
         function register(){
-            alert('未完成');
-            return;
-            
+            const username = document.getElementById('username').value;
+            const password = document.getElementById('password').value;
+            const rember = document.getElementById('remember').value;
+            if(username==''||password==''){
+                alert('用户名和密码不能为空');
+                return;
+            }
+            if(username.length<4 || password.length < 6){
+                alert('用户名或密码长度过短');
+                return;
+            }
+            if(username.length > 16 || password.length > 16){
+                alert('用户名或密码过长');
+                return;
+            }
+            const data = {
+                'username' : username,
+                'password' : password,
+                'rember' : rember
+            };
+            fetch('/register', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify(data)
+            }).then(response => {
+                if(response.status==200){
+                    alert('注册成功');
+                }else{
+                    throw new Error('注册失败');
+                }
+            }).catch(error => {
+                alert('注册失败，用户名已存在');
+            });
         }
         function init(){
             const token = localStorage.getItem('token');
@@ -98,11 +131,11 @@
             <option value="43200">15天</option>
         </select>
         <br>
-        <div style="display: flex; gap: 10px; margin-top: 20px;">
+        <div class = "button_container">
             <button onclick="login()">登陆</button>
             <button onclick="register()">注册</button>
         </div>
-        <p>注册功能完善中，可以用测试账号体验<br>用户名：admin 密码：admin</p>
+        <br>
     </div>
 </body>
 </html>

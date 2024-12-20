@@ -72,11 +72,15 @@ def update_data(province = 'all', history='false'):
     else:
         if history == 'true':
             fetcher.save_air_quality_history(province)
+            # 过去峰值
             maxaqi_time.process_aqi_data_simple(province)
+            # 逐小时
             aqi_byhour.process_aqi_byhour(province)
+            # 雷达图
             aqi_types.process_aqi_type(province)
         else:
             fetcher.save_air_quality(province)
+            # 未来趋势
             pollution_trend.pollution_trend(province)
 
 if __name__ == '__main__':
