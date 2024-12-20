@@ -656,9 +656,9 @@
             <div class="chart" id="pollution_chart_hourly"></div>
             <div class="chart" id="pollution_chart_type"></div>
             <div> 
-                <input type="range" id="date_select" onchange="load_pollution_type_data()">
+                <input type="range" id="date_select" oninput="load_pollution_type_data()">
                 <p>日期: <span id="selected_date"></span></p>
-                <input type="range" id="time_select" onchange="load_pollution_type_data()">
+                <input type="range" id="time_select" oninput="load_pollution_type_data()">
                 <p>时间: <span id="selected_time"></span></p>
             </div>
         </div>
