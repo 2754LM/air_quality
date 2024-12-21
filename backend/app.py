@@ -23,15 +23,17 @@ class LoginInfo(BaseModel):
     rember: str
 @app.post("/login")
 def login(info : LoginInfo):
-    if mysql.check_user(info.username,info.password):
-        token = token_manger.create_access_token(data={"username": info.username, "password": info.password}, timeout = int(info.rember))
-        return {'token': token}
-    else:
-        raise HTTPException(status_code=401, detail="用户名或密码错误")
+    try:
+        if mysql.check_user(info.username,info.password):
+            token = token_manger.create_access_token(data={"username": info.username, "password": info.password}, timeout = int(info.rember))
+            return {'token': token}
+        else:
+            raise HTTPException(status_code=401, detail="用户名或密码错误")
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=str(e))
 
 @app.post("/register")
 def register(info: LoginInfo):
-    print(info)  # 打印请求数据
     try:
         if mysql.check_exist(info.username):
             raise HTTPException(status_code=401, detail="用户名已存在")
@@ -45,14 +47,17 @@ def register(info: LoginInfo):
     
 @app.get("/protected")
 async def read_protected(authorization: str = Header(None)):
-    if authorization is None:
-        raise HTTPException(status_code=401, detail="无效的凭证")
-    token = authorization
-    if token_manger.decode_jwt(token) == None:
-        raise HTTPException(status_code=401, detail="无效的凭证")
-    file_path = os.path.join(os.path.dirname(__file__), '..', 'frontend', 'index.html')
-    with open(file_path, 'r', encoding='utf-8') as f:
-        return HTMLResponse(content=f.read())
+    try:
+        if authorization is None:
+            raise HTTPException(status_code=401, detail="无效的凭证")
+        token = authorization
+        if token_manger.decode_jwt(token) == None:
+            raise HTTPException(status_code=401, detail="无效的凭证")
+        file_path = os.path.join(os.path.dirname(__file__), '..', 'frontend', 'index.html')
+        with open(file_path, 'r', encoding='utf-8') as f:
+            return HTMLResponse(content=f.read())
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=str(e))
 
 @app.get("/data/{filename}")
 def get_file(filename):
