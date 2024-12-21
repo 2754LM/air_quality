@@ -581,7 +581,21 @@
             my_echarts.setOption(option);
         }
 
-        onload = function () {
+        //播放音乐
+        function playBgm() {
+            const button = document.getElementById('bgm_button');
+            const music = document.getElementById('bgm');
+            if(music.paused){
+                music.play();
+                button.textContent = '❚❚'; 
+            }else{
+                music.pause();
+                button.textContent = '▶'; 
+            }
+
+        }
+        
+        window.onload = function () {
             load_csv();
             load_date_time_csv();
             show_page('pollution_all');
@@ -679,18 +693,22 @@
 </head>
 
 <body>
+    <audio controls loop id = "bgm" style="display: none;">
+        <source src="/static/bgm.mp3" type="audio/mpeg">
+    </audio>
+    <button class="floating_button" id="bgm_button" onclick="playBgm()">▶</button>
+
     <section class="cover-frame">
-          <div class="bg-box">
+        <div class="bg-box">
             <img src="/static/2.png" alt="image frame">
-          </div>
-          <div class="cover-inner">
+        </div>
+        <div class="cover-inner">
             <h1><a href="/">AIR</a></h1>
             <div id="subtitle-box">
               <span id="subtitle">白云回望合</span>
             </div>
           </div>
       </section>
-
 
     <header>
         <h1>空气质量检测系统</h1>

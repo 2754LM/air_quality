@@ -109,6 +109,20 @@
                 document.getElementById('loginForm').style.display = 'block';
             }
         }
+        //播放音乐
+        function playBgm() {
+            const button = document.getElementById('bgm_button');
+            const music = document.getElementById('bgm');
+            if(music.paused){
+                music.play();
+                button.textContent = '❚❚'; 
+            }else{
+                music.pause();
+                button.textContent = '▶'; 
+            }
+
+        }
+     
         window.onload = async function() {
             init();
         };
@@ -116,15 +130,17 @@
 </head> 
 
 <body>
+    <audio controls loop id = "bgm" style="display: none;">
+        <source src="/static/bgm.mp3" type="audio/mpeg">
+    </audio>
+    <button class="floating_button" id="bgm_button" onclick="playBgm()">▶</button>
+
     <div id="loginForm"  style="display: none;">
         <h1>AIR</h1>
-        <label for="username">用户名:</label>
-        <input type="text" id="username" required>
+        <input type="text" id="username" placeholder="用户名">
         <br>
-        <label for="password">密码: </label>
-        <input type="password" id="password" required>
+        <input type="password" id="password" placeholder="密码">
         <br>
-        <label for="checkbox">记住登陆状态时间:</label>
         <select id="remember">
             <option value="15">15分钟</option>
             <option value="60">60分钟</option>
