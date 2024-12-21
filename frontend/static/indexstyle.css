@@ -161,3 +161,6 @@ button.update_button:hover {
     cursor: pointer; 
     z-index: 10; 
 }
+.floating_button:hover {    
+    background-color: rgba(0, 105, 217, 0.8);
+}
