@@ -27,7 +27,7 @@
                 load_pollution_primary_data();
             }
         }
-        
+
         //加载选项
         function load_csv() {
             fetch('/data/province_id.csv').then(response => response.text()).then(data => {
@@ -45,43 +45,43 @@
                 }
             });
         }
-        
+
         //加载日期和时间
         function load_date_time_csv() {
-                const now = new Date();
+            const now = new Date();
 
-                // 构造日期和时间的组合列表
-                const dateTimeList = [];
-                for (let i = -10; i < 0; i++) {
-                    const date = new Date();
-                    date.setDate(now.getDate() + i);
-                    const month = String(date.getMonth() + 1).padStart(2, '0');
-                    const day = String(date.getDate()).padStart(2, '0');
+            // 构造日期和时间的组合列表
+            const dateTimeList = [];
+            for (let i = -10; i < 0; i++) {
+                const date = new Date();
+                date.setDate(now.getDate() + i);
+                const month = String(date.getMonth() + 1).padStart(2, '0');
+                const day = String(date.getDate()).padStart(2, '0');
 
-                    for (let hour = 0; hour < 24; hour++) {
-                        const time = `${String(hour).padStart(2, '0')}:00`;
-                        dateTimeList.push(`${month}-${day} ${time}`);
-                    }
+                for (let hour = 0; hour < 24; hour++) {
+                    const time = `${String(hour).padStart(2, '0')}:00`;
+                    dateTimeList.push(`${month}-${day} ${time}`);
                 }
-
-                // 获取输入范围滑块和显示选定值的元素
-                const selectDateTime = document.getElementById('select_date_time');
-                const selectedDateTime = document.getElementById('selected_date_time');
-
-                // 设置滑块属性
-                selectDateTime.setAttribute('min', 0);
-                selectDateTime.setAttribute('max', dateTimeList.length - 1);
-                selectDateTime.setAttribute('value', 0);
-
-                // 初始化显示
-                selectedDateTime.textContent = dateTimeList[0];
-
-                // 监听滑块的变化
-                selectDateTime.addEventListener('input', function () {
-                    const selectedValue = dateTimeList[selectDateTime.value];
-                    selectedDateTime.textContent = selectedValue;
-                });
             }
+
+            // 获取输入范围滑块和显示选定值的元素
+            const selectDateTime = document.getElementById('select_date_time');
+            const selectedDateTime = document.getElementById('selected_date_time');
+
+            // 设置滑块属性
+            selectDateTime.setAttribute('min', 0);
+            selectDateTime.setAttribute('max', dateTimeList.length - 1);
+            selectDateTime.setAttribute('value', 0);
+
+            // 初始化显示
+            selectedDateTime.textContent = dateTimeList[0];
+
+            // 监听滑块的变化
+            selectDateTime.addEventListener('input', function () {
+                const selectedValue = dateTimeList[selectDateTime.value];
+                selectedDateTime.textContent = selectedValue;
+            });
+        }
 
         //刷新数据
         function load_data(id_name) {
@@ -90,57 +90,57 @@
             load.disabled = true;
             var province_name = '';
             var history = 'false';
-            if (id_name == 'update_button_all'){
+            if (id_name == 'update_button_all') {
                 province_name = 'all';
-            }else if(id_name == 'update_button1'){
+            } else if (id_name == 'update_button1') {
                 province_name = document.getElementById('city_select_trend').value;
                 history = 'false';
-            }else if(id_name == 'update_button2'){
+            } else if (id_name == 'update_button2') {
                 province_name = document.getElementById('city_select_history').value;
                 history = 'true';
             }
-            
+
             const data_json = {
-                'province_name' : province_name,
-                'history' : history
+                'province_name': province_name,
+                'history': history
             };
 
             var flag = 'false';
             fetch('/latest', {
                 method: 'POST',
-                headers:{
+                headers: {
                     'Content-Type': 'application/json'
                 },
                 body: JSON.stringify(data_json)
-            }).then(response => response.json())    
-            .then(data => {
-                if(data.flag == 'false' || confirm('数据已是最新！是否要继续更新？')){
-                    fetch('/update', {
-                        method: 'POST',
-                        headers:{
-                            'Content-Type': 'application/json'
-                        },
-                        body: JSON.stringify(data_json)
-                    }).then(respons =>  {
-                        if(respons.status == 200){
-                            alert('数据更新成功！');
+            }).then(response => response.json())
+                .then(data => {
+                    if (data.flag == 'false' || confirm('数据已是最新！是否要继续更新？')) {
+                        fetch('/update', {
+                            method: 'POST',
+                            headers: {
+                                'Content-Type': 'application/json'
+                            },
+                            body: JSON.stringify(data_json)
+                        }).then(respons => {
+                            if (respons.status == 200) {
+                                alert('数据更新成功！');
 
-                        }else{
-                            alert('数据更新失败！');
-                        }
-                    }).finally(()=>{
-                        if(id_name == 'update_button_all') load.style.background = 'rgba(255, 255, 255, 0.8)';
+                            } else {
+                                alert('数据更新失败！');
+                            }
+                        }).finally(() => {
+                            if (id_name == 'update_button_all') load.style.background = 'rgba(255, 255, 255, 0.8)';
+                            else load.style.background = 'rgba(69, 160, 73, 1)';
+                            load.disabled = false;
+                        });
+                    } else {
+                        if (id_name == 'update_button_all') load.style.background = 'rgba(255, 255, 255, 0.8)';
                         else load.style.background = 'rgba(69, 160, 73, 1)';
                         load.disabled = false;
-                    });
-                }else{
-                    if(id_name == 'update_button_all') load.style.background = 'rgba(255, 255, 255, 0.8)';
-                    else load.style.background = 'rgba(69, 160, 73, 1)';
-                    load.disabled = false;
-                }
-            });
+                    }
+                });
         }
-        
+
         // 全国aqi
         function load_pollution_all_data() {
             fetch('/data/processed/pollution_all.json')
@@ -270,7 +270,7 @@
             };
             my_echarts.setOption(option);
         }
- 
+
         // 省份未来趋势
         function load_pollution_trend_data() {
             var selectElement = document.getElementById("city_select_trend");
@@ -294,10 +294,10 @@
                     formatter: function (params) {
                         let tooltipContent = `<strong>${params[0].name}</strong><br/>`;
                         params.forEach((param) => {
-                            tooltipContent += `${param.seriesName}: ${param.value}<br/>`;     
-                                const dateIndex = m_data.dates.indexOf(param.name);
-                                tooltipContent += `污染等级 : ${m_data.level[dateIndex]} (${m_data.level_detail[dateIndex]})<br/>`;
-                                tooltipContent += `主要污染物: ${m_data.main_pollutant[dateIndex]}<br/>`;
+                            tooltipContent += `${param.seriesName}: ${param.value}<br/>`;
+                            const dateIndex = m_data.dates.indexOf(param.name);
+                            tooltipContent += `污染等级 : ${m_data.level[dateIndex]} (${m_data.level_detail[dateIndex]})<br/>`;
+                            tooltipContent += `主要污染物: ${m_data.main_pollutant[dateIndex]}<br/>`;
                         });
                         return tooltipContent;
                     }
@@ -461,8 +461,8 @@
                     trigger: 'axis',
                     formatter: function (params) {
                         return params.map(param => {
-                            const fullDate = param.seriesName; 
-                            const time = timeLabels[param.dataIndex]; 
+                            const fullDate = param.seriesName;
+                            const time = timeLabels[param.dataIndex];
 
                             const [year, month, day] = fullDate.split('-');
                             const [hour] = time.split(':');
@@ -510,20 +510,29 @@
         }
 
         //省份历史趋势(雷达图)
+        let searched_data = {};
+        //省份历史趋势(雷达图)
         function load_pollution_type_data() {
             var selectElement = document.getElementById("city_select_history");
             var province_name = selectElement.value;
 
             var selectedDateTime = document.getElementById("selected_date_time").textContent;
             var [selectedDate, selectedTime] = selectedDateTime.split(' ');
-            var currentYear=new Date().getFullYear();
-            selectedDate= `${currentYear}-${selectedDate}`;
+            var currentYear = new Date().getFullYear();
+            selectedDate = `${currentYear}-${selectedDate}`;
 
-            fetch(`/data/processed/${province_name}_aqitype.json`)
-                .then(response => response.json())
-                .then(data => {
-                    update_pollution_type_chart(data, selectedDate, selectedTime);
-                });
+            if (searched_data[province_name]) {
+                update_pollution_type_chart(searched_data[province_name], selectedDate, selectedTime);
+            } else {
+                fetch(`/data/processed/${province_name}_aqitype.json`)
+                    .then(response => response.json())
+                    .then(data => {
+                        //缓存数据
+                        searched_data[province_name] = data;
+                        update_pollution_type_chart(data, selectedDate, selectedTime);
+                    });
+            }
+
         }
         function update_pollution_type_chart(m_data, selectedDate, selectedTime) {
             var my_echarts = echarts.init(document.getElementById("pollution_chart_type"));
@@ -540,7 +549,7 @@
 
             var pollutionNames = ['PM10', 'PM2.5', 'NO2', 'SO2', 'CO', 'O3'];
 
-        // 配置雷达图
+            // 配置雷达图
             var option = {
                 title: {
                     text: `污染物浓度雷达图\n日期: ${selectedDate}, 时间: ${selectedTime}`
@@ -601,93 +610,93 @@
             show_page('pollution_all');
         }
 
-    let isPlaying = false; // 播放状态
-    let intervalId = null; // 定时器ID
+        let isPlaying = false; // 播放状态
+        let intervalId = null; // 定时器ID
 
-    document.addEventListener('DOMContentLoaded', function () {
-        const playButton = document.getElementById('play_button');
-        const rangeInput = document.getElementById('select_date_time'); 
-        const rangeSpan = document.getElementById('selected_date_time');
+        document.addEventListener('DOMContentLoaded', function () {
+            const playButton = document.getElementById('play_button');
+            const rangeInput = document.getElementById('select_date_time');
+            const rangeSpan = document.getElementById('selected_date_time');
 
-        const times = generateTimeValues(); 
-        rangeInput.max = times.length - 1;
+            const times = generateTimeValues();
+            rangeInput.max = times.length - 1;
 
-        // 初始化显示
-        rangeInput.value = 0; 
-        rangeSpan.textContent = times[0];
+            // 初始化显示
+            rangeInput.value = 0;
+            rangeSpan.textContent = times[0];
 
-        // 播放按钮点击事件
-        playButton.addEventListener('click', function () {
-            const span = this.querySelector('span');
+            // 播放按钮点击事件
+            playButton.addEventListener('click', function () {
+                const span = this.querySelector('span');
 
-            if (!isPlaying) {
-                // 切换到暂停图标
-                isPlaying = true;
-                span.style.borderLeft = '';
-                span.style.borderTop = '10px solid white';
-                span.style.borderBottom = '10px solid white';
-                span.style.height = '0';
-                span.style.width = '15px';
-                span.style.backgroundColor = 'white';
-                span.style.left = 'calc(50%)';
+                if (!isPlaying) {
+                    // 切换到暂停图标
+                    isPlaying = true;
+                    span.style.borderLeft = '';
+                    span.style.borderTop = '10px solid white';
+                    span.style.borderBottom = '10px solid white';
+                    span.style.height = '0';
+                    span.style.width = '15px';
+                    span.style.backgroundColor = 'white';
+                    span.style.left = 'calc(50%)';
 
-                intervalId = setInterval(() => {
-                    if (parseInt(rangeInput.value) < parseInt(rangeInput.max)) {
-                        rangeInput.value = parseInt(rangeInput.value) + 1;
-                        updateTimeDisplay();
-                        load_pollution_type_data();
-                         // 更新显示内容
-                    } else {
-                        clearInterval(intervalId); 
-                        intervalId = null;
-                        isPlaying = false;
-                        resetPlayButtonIcon(span);
-                    }
-                }, 300); 
-            } else {
-                // 停止播放
-                clearInterval(intervalId);
-                intervalId = null;
-                isPlaying = false;
-                resetPlayButtonIcon(span);
+                    intervalId = setInterval(() => {
+                        if (parseInt(rangeInput.value) < parseInt(rangeInput.max)) {
+                            rangeInput.value = parseInt(rangeInput.value) + 1;
+                            updateTimeDisplay();
+                            load_pollution_type_data();
+                            // 更新显示内容
+                        } else {
+                            clearInterval(intervalId);
+                            intervalId = null;
+                            isPlaying = false;
+                            resetPlayButtonIcon(span);
+                        }
+                    }, 300);
+                } else {
+                    // 停止播放
+                    clearInterval(intervalId);
+                    intervalId = null;
+                    isPlaying = false;
+                    resetPlayButtonIcon(span);
+                }
+            });
+
+            rangeInput.addEventListener('input', updateTimeDisplay);
+
+            function updateTimeDisplay() {
+                const index = parseInt(rangeInput.value);
+                rangeSpan.textContent = times[index];
             }
         });
 
-        rangeInput.addEventListener('input', updateTimeDisplay);
-
-        function updateTimeDisplay() {
-            const index = parseInt(rangeInput.value);
-            rangeSpan.textContent = times[index];
+        function resetPlayButtonIcon(span) {
+            span.style.borderLeft = '17px solid white';
+            span.style.borderTop = '10px solid transparent';
+            span.style.borderBottom = '10px solid transparent';
+            span.style.width = '0';
+            span.style.height = '0';
+            span.style.backgroundColor = 'transparent';
+            span.style.left = '55%';
         }
-    });
 
-    function resetPlayButtonIcon(span) {
-        span.style.borderLeft = '17px solid white';
-        span.style.borderTop = '10px solid transparent';
-        span.style.borderBottom = '10px solid transparent';
-        span.style.width = '0';
-        span.style.height = '0';
-        span.style.backgroundColor = 'transparent';
-        span.style.left = '55%';
-    }
+        function generateTimeValues() {
+            const times = [];
+            const today = new Date();
 
-    function generateTimeValues() {
-        const times = [];
-        const today = new Date();
+            for (let i = -10; i < 10; i++) {
+                const date = new Date(today);
+                date.setDate(today.getDate() + i);
+                const dateString = `${(date.getMonth() + 1).toString().padStart(2, '0')}-${date.getDate().toString().padStart(2, '0')}`;
 
-        for (let i = -10; i <10; i++) {
-            const date = new Date(today);
-            date.setDate(today.getDate() +i); 
-            const dateString = `${(date.getMonth() + 1).toString().padStart(2, '0')}-${date.getDate().toString().padStart(2, '0')}`;
-
-            for (let h = 0; h < 24; h++) {
-                const hour = h.toString().padStart(2, '0');
-                times.push(`${dateString} ${hour}:00`);
+                for (let h = 0; h < 24; h++) {
+                    const hour = h.toString().padStart(2, '0');
+                    times.push(`${dateString} ${hour}:00`);
+                }
             }
-        }
 
-        return times;
-    }
+            return times;
+        }
 
     </script>
 </head>
@@ -705,10 +714,10 @@
         <div class="cover-inner">
             <h1><a href="/">AIR</a></h1>
             <div id="subtitle-box">
-              <span id="subtitle">白云回望合</span>
+                <span id="subtitle">白云回望合</span>
             </div>
-          </div>
-      </section>
+        </div>
+    </section>
 
     <header>
         <h1>空气质量检测系统</h1>
@@ -747,7 +756,7 @@
             <h2>查询省份未来污染变化</h2>
             <select id="city_select_trend"></select>
             <button class="query_button" onclick="load_pollution_trend_data()">查询</button>
-            <button class="query_button" id = "update_button1" onclick="load_data('update_button1')">更新</button>
+            <button class="query_button" id="update_button1" onclick="load_data('update_button1')">更新</button>
             <div class="chart" id="pollution_chart_trend"></div>
         </div>
 
@@ -756,16 +765,16 @@
             <select id="city_select_history"></select>
             <button class="query_button"
                 onclick="load_pollution_history_data();load_pollution_hourly_data()">查询</button>
-                <button class="query_button" id = "update_button2" onclick="load_data('update_button2')">更新</button>
+            <button class="query_button" id="update_button2" onclick="load_data('update_button2')">更新</button>
             <div class="chart" id="pollution_chart_history"></div>
             <div class="chart" id="pollution_chart_hourly"></div>
             <div class="chart" id="pollution_chart_type"></div>
             <div style="display: flex;align-items:center;gap: 10px;">
-                <button id="play_button" 
+                <button id="play_button"
                     style="position: relative; width: 50px; height: 50px; background-color: #3d86a0; border: none; border-radius: 50%; cursor: pointer; outline: none;">
                     <span
                         style="position: absolute; left: 55%; top: 50%; transform: translate(-50%, -50%); width: 0; height: 0; border-left: 17px solid white; border-top: 10px solid transparent; border-bottom: 10px solid transparent;"></span>
-                </button> 
+                </button>
                 <input type="range" id="select_date_time" style="flex:1;" onchange="load_pollution_type_data()">
                 <p>日期: <span id="selected_date_time"></span></p>
             </div>
