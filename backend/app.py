@@ -30,12 +30,17 @@ def login(info : LoginInfo):
         raise HTTPException(status_code=401, detail="用户名或密码错误")
 
 @app.post("/register")
-def register(info : LoginInfo):
-    if mysql.check_exist(info.username):
-        raise HTTPException(status_code=401, detail="用户名已存在")
-    else:
-        mysql.add_user(info.username,info.password)
-        return {'message': '注册成功'}
+def register(info: LoginInfo):
+    print(info)  # 打印请求数据
+    try:
+        if mysql.check_exist(info.username):
+            raise HTTPException(status_code=401, detail="用户名已存在")
+        else:
+            mysql.add_user(info.username, info.password)
+            return {'message': '注册成功'}
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=str(e))
+
 
     
 @app.get("/protected")
