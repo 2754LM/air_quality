@@ -582,6 +582,7 @@
         }
 
         onload = function () {
+            getSentence();
             load_csv();
             load_date_time_csv();
             show_page('pollution_all');
@@ -675,6 +676,13 @@
         return times;
     }
 
+    function getSentence(){
+        fetch('https://v1.jinrishici.com/tianqi/xieyun').then(response => response.json()).then(data => {
+            const sentence = data.content;
+            const sentenceElement = document.getElementById('subtitle');
+            sentenceElement.textContent = sentence;
+        });
+    }
     </script>
 </head>
 
