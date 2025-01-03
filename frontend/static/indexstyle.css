@@ -5,8 +5,9 @@ body {
     color: #333;
     display: flex; 
     flex-direction: column;
-    overflow-x: hidden;
+    overflow-x: hidden; 
 }
+
 h1{
     text-align: center;
 }
@@ -136,13 +137,30 @@ button.update_button:hover {
 .cover-inner #subtitle-box,.cover-inner h1 {
     font-family: Titillium Web,PingFang SC,Hiragino Sans GB,Microsoft JhengHei,Microsoft YaHei,Helvetica Neue,Helvetica,Arial,sans-serif
 }
-
 .cover-inner #subtitle-box {
-    font-size: 2rem;
+    font-size: 3rem;
     margin: .5rem 0 1.5rem
 }
 
 .cover-inner,.cover-inner a {
     color: #fff;
     text-decoration: none
+}
+
+
+.floating_button {
+    position: fixed;
+    top: 20px; 
+    right: 20px; 
+    background-color: rgba(52, 159, 195, 0.9); 
+    color: white;
+    border: none;
+    border-radius: 50%; 
+    width: 50px;
+    height: 50px; 
+    cursor: pointer; 
+    z-index: 10; 
+}
+.floating_button:hover {    
+    background-color: rgba(0, 105, 217, 0.8);
 }
