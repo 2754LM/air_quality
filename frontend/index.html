@@ -82,6 +82,14 @@
                     selectedDateTime.textContent = selectedValue;
                 });
             }
+        
+        //清空缓存
+        function clear_caches() {
+            caches.keys().then(cacheNames => {
+                return Promise.all(cacheNames.map(cacheName => caches.delete(cacheName)));
+            });
+        }
+
 
         //刷新数据
         function load_data(id_name) {
@@ -109,7 +117,8 @@
             fetch('/latest', {
                 method: 'POST',
                 headers:{
-                    'Content-Type': 'application/json'
+                    'Content-Type': 'application/json',
+                    'Cache-Control': 'no-cache'
                 },
                 body: JSON.stringify(data_json)
             }).then(response => response.json())    
@@ -124,7 +133,7 @@
                     }).then(respons =>  {
                         if(respons.status == 200){
                             alert('数据更新成功！');
-
+                            clear_caches();
                         }else{
                             alert('数据更新失败！');
                         }
@@ -140,7 +149,7 @@
                 }
             });
         }
-        
+
         // 全国aqi
         function load_pollution_all_data() {
             fetch('/data/processed/pollution_all.json')
