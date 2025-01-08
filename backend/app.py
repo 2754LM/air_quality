@@ -8,6 +8,10 @@ from fastapi.staticfiles import StaticFiles
 from backend.processing import control
 from backend import mysql,token_manger
 
+def disable_cache(response):
+    response.headers["Cache-Control"] = "no-store"
+    return response
+    
 app = FastAPI()
 app.mount("/static", StaticFiles(directory=os.path.join(os.path.dirname(os.path.abspath(__file__)), '../frontend/static')), name="static")
 
@@ -51,11 +55,11 @@ async def read_protected(authorization: str = Header(None)):
 
 @app.get("/data/{filename}")
 def get_file(filename):
-    return FileResponse(os.path.join("data", filename))
+    return disable_cache(FileResponse(os.path.join("data", filename)))
 
 @app.get("/data/processed/{filename}")
 def get_processed_file(filename):
-    return FileResponse(os.path.join("data", "processed", filename))
+    return disable_cache(FileResponse(os.path.join("data", "processed", filename)))
 
 
 class UpdateInfo(BaseModel):
