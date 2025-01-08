@@ -83,14 +83,6 @@
                 });
             }
         
-        //清空缓存
-        function clear_caches() {
-            caches.keys().then(cacheNames => {
-                return Promise.all(cacheNames.map(cacheName => caches.delete(cacheName)));
-            });
-        }
-
-
         //刷新数据
         function load_data(id_name) {
             var load = document.getElementById(id_name);
@@ -127,13 +119,13 @@
                     fetch('/update', {
                         method: 'POST',
                         headers:{
-                            'Content-Type': 'application/json'
+                            'Content-Type': 'application/json',
+                            'Cache-Control': 'no-cache'
                         },
                         body: JSON.stringify(data_json)
                     }).then(respons =>  {
                         if(respons.status == 200){
                             alert('数据更新成功！');
-                            clear_caches();
                         }else{
                             alert('数据更新失败！');
                         }
@@ -152,8 +144,9 @@
 
         // 全国aqi
         function load_pollution_all_data() {
-            fetch('/data/processed/pollution_all.json')
-                .then(response => response.json())
+            fetch('/data/processed/pollution_all.json', {
+                'Cache-Control': 'no-cache'
+                }).then(response => response.json())
                 .then(data => {
                     const formattedData = [];
                     const cities = Object.keys(data);
@@ -214,8 +207,9 @@
 
         // 全国aqi分档
         function load_pollution_level_data() {
-            fetch('/data/processed/aqi_ranges.json')
-                .then(response => response.json())
+            fetch('/data/processed/aqi_ranges.json',{
+                'Cache-Control': 'no-cache'
+            }).then(response => response.json())
                 .then(data => {
                     update_pollution_level_chart(data);
                 });
@@ -248,8 +242,9 @@
 
         // 全国污染物分档
         function load_pollution_primary_data() {
-            fetch('/data/processed/pollutant_statistics.json')
-                .then(response => response.json())
+            fetch('/data/processed/pollutant_statistics.json',{
+                'Cache-Control': 'no-cache'
+            }).then(response => response.json())
                 .then(data => {
                     update_pollution_primary_chart(data);
                 });
@@ -284,8 +279,9 @@
         function load_pollution_trend_data() {
             var selectElement = document.getElementById("city_select_trend");
             var province_name = selectElement.value;
-            fetch(`/data/processed/${province_name}.json`)
-                .then(response => response.json())
+            fetch(`/data/processed/${province_name}.json`, {
+                'Cache-Control': 'no-cache'
+            }).then(response => response.json())
                 .then(data => {
                     update_pollution_trend_chart(data)
                 }).catch(error => {
@@ -360,8 +356,9 @@
         function load_pollution_history_data() {
             var selectElement = document.getElementById("city_select_history");
             var province_name = selectElement.value;
-            fetch(`/data/processed/${province_name}_maxaqi_time.json`)
-                .then(response => response.json())
+            fetch(`/data/processed/${province_name}_maxaqi_time.json`, {
+                'Cache-Control': 'no-cache'
+            }).then(response => response.json())
                 .then(data => {
                     update_pollution_history_chart(data);
                 }).catch(error => {
@@ -444,8 +441,9 @@
         function load_pollution_hourly_data() {
             var selectElement = document.getElementById("city_select_history");
             var province_name = selectElement.value;
-            fetch(`/data/processed/${province_name}_aqi_byhour.json`)
-                .then(response => response.json())
+            fetch(`/data/processed/${province_name}_aqi_byhour.json`, {
+                'Cache-Control': 'no-cache'
+            }).then(response => response.json())
                 .then(data => {
                     update_pollution_hourly_chart(data);
                 });
@@ -528,8 +526,9 @@
             var currentYear=new Date().getFullYear();
             selectedDate= `${currentYear}-${selectedDate}`;
 
-            fetch(`/data/processed/${province_name}_aqitype.json`)
-                .then(response => response.json())
+            fetch(`/data/processed/${province_name}_aqitype.json`,{
+                'Cache-Control': 'no-cache'
+            }).then(response => response.json())
                 .then(data => {
                     update_pollution_type_chart(data, selectedDate, selectedTime);
                 });
@@ -686,7 +685,9 @@
         }
 
         function getSentence(){
-            fetch('https://v1.jinrishici.com/tianqi/xieyun').then(response => response.json()).then(data => {
+            fetch('https://v1.jinrishici.com/tianqi/xieyun',{
+                'Cache-Control': 'no-cache'
+            }).then(response => response.json()).then(data => {
                 const sentence = data.content;
                 const sentenceElement = document.getElementById('subtitle');
                 sentenceElement.textContent = sentence;
