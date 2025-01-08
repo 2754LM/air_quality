@@ -511,20 +511,29 @@
         }
 
         //省份历史趋势(雷达图)
+        let searched_data = {};
+        //省份历史趋势(雷达图)
         function load_pollution_type_data() {
             var selectElement = document.getElementById("city_select_history");
             var province_name = selectElement.value;
 
             var selectedDateTime = document.getElementById("selected_date_time").textContent;
             var [selectedDate, selectedTime] = selectedDateTime.split(' ');
-            var currentYear=new Date().getFullYear();
-            selectedDate= `${currentYear}-${selectedDate}`;
+            var currentYear = new Date().getFullYear();
+            selectedDate = `${currentYear}-${selectedDate}`;
 
-            fetch(`/data/processed/${province_name}_aqitype.json`)
-                .then(response => response.json())
-                .then(data => {
-                    update_pollution_type_chart(data, selectedDate, selectedTime);
-                });
+            if (searched_data[province_name]) {
+                update_pollution_type_chart(searched_data[province_name], selectedDate, selectedTime);
+            } else {
+                fetch(`/data/processed/${province_name}_aqitype.json`)
+                    .then(response => response.json())
+                    .then(data => {
+                        //缓存数据
+                        searched_data[province_name] = data;
+                        update_pollution_type_chart(data, selectedDate, selectedTime);
+                    });
+            }
+
         }
         function update_pollution_type_chart(m_data, selectedDate, selectedTime) {
             var my_echarts = echarts.init(document.getElementById("pollution_chart_type"));
@@ -541,7 +550,7 @@
 
             var pollutionNames = ['PM10', 'PM2.5', 'NO2', 'SO2', 'CO', 'O3'];
 
-        // 配置雷达图
+            // 配置雷达图
             var option = {
                 title: {
                     text: `污染物浓度雷达图\n日期: ${selectedDate}, 时间: ${selectedTime}`
@@ -583,7 +592,6 @@
         }
 
         onload = function () {
-            getSentence();
             load_csv();
             load_date_time_csv();
             show_page('pollution_all');
@@ -594,14 +602,14 @@
 
         document.addEventListener('DOMContentLoaded', function () {
             const playButton = document.getElementById('play_button');
-            const rangeInput = document.getElementById('select_date_time'); 
+            const rangeInput = document.getElementById('select_date_time');
             const rangeSpan = document.getElementById('selected_date_time');
 
-            const times = generateTimeValues(); 
+            const times = generateTimeValues();
             rangeInput.max = times.length - 1;
 
             // 初始化显示
-            rangeInput.value = 0; 
+            rangeInput.value = 0;
             rangeSpan.textContent = times[0];
 
             // 播放按钮点击事件
@@ -626,12 +634,12 @@
                             load_pollution_type_data();
                             // 更新显示内容
                         } else {
-                            clearInterval(intervalId); 
+                            clearInterval(intervalId);
                             intervalId = null;
                             isPlaying = false;
                             resetPlayButtonIcon(span);
                         }
-                    }, 200); 
+                    }, 300);
                 } else {
                     // 停止播放
                     clearInterval(intervalId);
@@ -663,9 +671,9 @@
             const times = [];
             const today = new Date();
 
-            for (let i = -10; i <10; i++) {
+            for (let i = -10; i < 10; i++) {
                 const date = new Date(today);
-                date.setDate(today.getDate() +i); 
+                date.setDate(today.getDate() + i);
                 const dateString = `${(date.getMonth() + 1).toString().padStart(2, '0')}-${date.getDate().toString().padStart(2, '0')}`;
 
                 for (let h = 0; h < 24; h++) {
