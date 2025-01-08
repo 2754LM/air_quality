@@ -588,102 +588,117 @@
             show_page('pollution_all');
         }
 
-    let isPlaying = false; // 播放状态
-    let intervalId = null; // 定时器ID
+        let isPlaying = false; // 播放状态
+        let intervalId = null; // 定时器ID
 
-    document.addEventListener('DOMContentLoaded', function () {
-        const playButton = document.getElementById('play_button');
-        const rangeInput = document.getElementById('select_date_time'); 
-        const rangeSpan = document.getElementById('selected_date_time');
+        document.addEventListener('DOMContentLoaded', function () {
+            const playButton = document.getElementById('play_button');
+            const rangeInput = document.getElementById('select_date_time'); 
+            const rangeSpan = document.getElementById('selected_date_time');
 
-        const times = generateTimeValues(); 
-        rangeInput.max = times.length - 1;
+            const times = generateTimeValues(); 
+            rangeInput.max = times.length - 1;
 
-        // 初始化显示
-        rangeInput.value = 0; 
-        rangeSpan.textContent = times[0];
+            // 初始化显示
+            rangeInput.value = 0; 
+            rangeSpan.textContent = times[0];
 
-        // 播放按钮点击事件
-        playButton.addEventListener('click', function () {
-            const span = this.querySelector('span');
+            // 播放按钮点击事件
+            playButton.addEventListener('click', function () {
+                const span = this.querySelector('span');
 
-            if (!isPlaying) {
-                // 切换到暂停图标
-                isPlaying = true;
-                span.style.borderLeft = '';
-                span.style.borderTop = '10px solid white';
-                span.style.borderBottom = '10px solid white';
-                span.style.height = '0';
-                span.style.width = '15px';
-                span.style.backgroundColor = 'white';
-                span.style.left = 'calc(50%)';
+                if (!isPlaying) {
+                    // 切换到暂停图标
+                    isPlaying = true;
+                    span.style.borderLeft = '';
+                    span.style.borderTop = '10px solid white';
+                    span.style.borderBottom = '10px solid white';
+                    span.style.height = '0';
+                    span.style.width = '15px';
+                    span.style.backgroundColor = 'white';
+                    span.style.left = 'calc(50%)';
 
-                intervalId = setInterval(() => {
-                    if (parseInt(rangeInput.value) < parseInt(rangeInput.max)) {
-                        rangeInput.value = parseInt(rangeInput.value) + 1;
-                        updateTimeDisplay();
-                        load_pollution_type_data();
-                         // 更新显示内容
-                    } else {
-                        clearInterval(intervalId); 
-                        intervalId = null;
-                        isPlaying = false;
-                        resetPlayButtonIcon(span);
-                    }
-                }, 200); 
-            } else {
-                // 停止播放
-                clearInterval(intervalId);
-                intervalId = null;
-                isPlaying = false;
-                resetPlayButtonIcon(span);
+                    intervalId = setInterval(() => {
+                        if (parseInt(rangeInput.value) < parseInt(rangeInput.max)) {
+                            rangeInput.value = parseInt(rangeInput.value) + 1;
+                            updateTimeDisplay();
+                            load_pollution_type_data();
+                            // 更新显示内容
+                        } else {
+                            clearInterval(intervalId); 
+                            intervalId = null;
+                            isPlaying = false;
+                            resetPlayButtonIcon(span);
+                        }
+                    }, 200); 
+                } else {
+                    // 停止播放
+                    clearInterval(intervalId);
+                    intervalId = null;
+                    isPlaying = false;
+                    resetPlayButtonIcon(span);
+                }
+            });
+
+            rangeInput.addEventListener('input', updateTimeDisplay);
+
+            function updateTimeDisplay() {
+                const index = parseInt(rangeInput.value);
+                rangeSpan.textContent = times[index];
             }
         });
 
-        rangeInput.addEventListener('input', updateTimeDisplay);
-
-        function updateTimeDisplay() {
-            const index = parseInt(rangeInput.value);
-            rangeSpan.textContent = times[index];
+        function resetPlayButtonIcon(span) {
+            span.style.borderLeft = '17px solid white';
+            span.style.borderTop = '10px solid transparent';
+            span.style.borderBottom = '10px solid transparent';
+            span.style.width = '0';
+            span.style.height = '0';
+            span.style.backgroundColor = 'transparent';
+            span.style.left = '55%';
         }
-    });
 
-    function resetPlayButtonIcon(span) {
-        span.style.borderLeft = '17px solid white';
-        span.style.borderTop = '10px solid transparent';
-        span.style.borderBottom = '10px solid transparent';
-        span.style.width = '0';
-        span.style.height = '0';
-        span.style.backgroundColor = 'transparent';
-        span.style.left = '55%';
-    }
+        function generateTimeValues() {
+            const times = [];
+            const today = new Date();
 
-    function generateTimeValues() {
-        const times = [];
-        const today = new Date();
+            for (let i = -10; i <10; i++) {
+                const date = new Date(today);
+                date.setDate(today.getDate() +i); 
+                const dateString = `${(date.getMonth() + 1).toString().padStart(2, '0')}-${date.getDate().toString().padStart(2, '0')}`;
 
-        for (let i = -10; i <10; i++) {
-            const date = new Date(today);
-            date.setDate(today.getDate() +i); 
-            const dateString = `${(date.getMonth() + 1).toString().padStart(2, '0')}-${date.getDate().toString().padStart(2, '0')}`;
-
-            for (let h = 0; h < 24; h++) {
-                const hour = h.toString().padStart(2, '0');
-                times.push(`${dateString} ${hour}:00`);
+                for (let h = 0; h < 24; h++) {
+                    const hour = h.toString().padStart(2, '0');
+                    times.push(`${dateString} ${hour}:00`);
+                }
             }
+
+            return times;
         }
 
-        return times;
-    }
+        function getSentence(){
+            fetch('https://v1.jinrishici.com/tianqi/xieyun').then(response => response.json()).then(data => {
+                const sentence = data.content;
+                const sentenceElement = document.getElementById('subtitle');
+                sentenceElement.textContent = sentence;
+            });
+        }
+        
+        //播放音乐
+        function playBgm() {
+            const button = document.getElementById('bgm_button');
+            const music = document.getElementById('bgm');
+            if(music.paused){
+                music.play();
+                button.textContent = '❚❚'; 
+            }else{
+                music.pause();
+                button.textContent = '▶'; 
+            }
 
-    function getSentence(){
-        fetch('https://v1.jinrishici.com/tianqi/xieyun').then(response => response.json()).then(data => {
-            const sentence = data.content;
-            const sentenceElement = document.getElementById('subtitle');
-            sentenceElement.textContent = sentence;
-        });
-    }
-    </script>
+        }
+     
+        </script>
 </head>
 
 <body>
