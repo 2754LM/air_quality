@@ -1,4 +1,7 @@
 # air_quality
+
+基于fastapi+echarts构建的项目
+
 项目架构
 
 - backend存放后端文件，爬虫，fastapi处理在根目录。
